@@ -6,7 +6,9 @@
     "dev:preview": "node scripts/images.mjs && NWA_NOW=2026-09-21T23:00:00-05:00 NEXT_DIST_DIR=.next-dev next dev -p 3035",
     "build": "node scripts/images.mjs && NEXT_DIST_DIR=.next-build next build && rm -rf out && cp -r .next-build out && node scripts/postbuild.mjs",
     "typecheck": "tsc --noEmit",
-    "qa": "node scripts/qa.mjs"
+    "qa": "node scripts/qa.mjs",
+    "sync": "node scripts/sync-from-newsroom.mjs",
+    "sync:deploy": "bash scripts/sync-deploy.sh"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
