@@ -1,6 +1,7 @@
 # CMS login for nwanext.com/admin: the official sveltia-cms-auth Worker (MIT, github.com/sveltia/sveltia-cms-auth, commit 5822c9f).
 # Deploy from this folder: npx wrangler deploy
-# Secrets (set once, never commit): npx wrangler secret put GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET
+# GITHUB_CLIENT_ID is public (it appears in every GitHub login URL), so it lives here.
+# The secret is set once by Sam and never committed: npx wrangler secret put GITHUB_CLIENT_SECRET
 name = "nwanext-cms-auth"
 main = "src/index.js"
 compatibility_date = "2026-11-11"
@@ -8,3 +9,4 @@ workers_dev = true
 
 [vars]
 ALLOWED_DOMAINS = "nwanext.com, www.nwanext.com"
+GITHUB_CLIENT_ID = "Ov23liAp3vjkGchjHqKH" # OAuth app "NWA Next CMS" on graymade
