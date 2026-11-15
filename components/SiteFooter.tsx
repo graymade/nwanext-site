@@ -34,7 +34,7 @@ export default function SiteFooter() {
       links: [
         { href: '/about/', name: 'About' },
         { href: '/connect/', name: 'Get connected' },
-        { href: '/newsletter/', name: 'Friday email' },
+        { href: '/newsletter/', name: 'Newsletter' },
         { href: '/submit/', name: 'Send a tip' },
         { href: '/credits/', name: 'Photo credits' },
         { href: '/feed.xml', name: 'RSS feed' },

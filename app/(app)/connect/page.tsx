@@ -6,7 +6,7 @@ import { pageMeta } from '@/lib/seo';
 
 export const metadata = pageMeta({
   title: 'Get connected in Northwest Arkansas',
-  description: 'Ways to plug in around NWA: free events, volunteering, libraries, city boards and the NWA Next Friday email.',
+  description: 'Ways to plug in around NWA: free events, volunteering, libraries, city boards and the NWA Next newsletter.',
   path: '/connect/',
 });
 
@@ -16,10 +16,9 @@ export default function ConnectPage() {
   const pick = (t: string) => groups.find((g) => g.title === t);
   const give = pick('Give and volunteer');
   const todo = pick('Things to do');
-  const pitch = site.newsletter.pitch.replace(/^One email on Friday morning\.\s*/i, '');
   // Four ways in (Relume contact 23), each a short line and one action.
   const ways = [
-    { title: 'Get the Friday email', line: pitch, action: <Link className="button" href="/newsletter/">Get the Friday email</Link> },
+    { title: 'Get the newsletter', line: site.newsletter.pitch, action: <Link className="button" href="/newsletter/">Get the newsletter</Link> },
     { title: 'Follow along', line: 'New openings and events land on Instagram first.', action: <a className="button button--quiet" href={site.instagram}>@{site.instagramHandle}</a> },
     { title: 'Go to something free', line: 'Museum nights, outdoor movies, festivals and markets. We keep a running list.', action: <Link className="button button--quiet" href="/guides/free-things-to-do/">Free things to do</Link> },
     { title: 'Tell us what we missed', line: 'Opening, closing or happening and we haven’t covered it? We want to know.', action: <Link className="button button--quiet" href="/submit/">Send a tip</Link> },

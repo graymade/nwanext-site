@@ -12,3 +12,4 @@ qa/
 .DS_Store
 reference/
 .env*
+.wrangler/

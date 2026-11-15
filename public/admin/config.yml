@@ -1,10 +1,11 @@
 # NWA Next CMS. Paths are relative to the graymade/nwanext-site repo root.
 # Local editing: open /admin on the built site in Chrome, choose "Work with Local Repository", pick the _Pocket folder.
-# Online editing: GitHub login through the sveltia-cms-auth worker (base_url below once it exists).
+# Online editing: nwanext.com/admin, Sign in with GitHub (graymade). Login runs through the nwanext-cms-auth Worker (ops/cms-auth).
 backend:
   name: github
   repo: graymade/nwanext-site
   branch: main
+  base_url: https://nwanext-cms-auth.graymade.workers.dev
 
 media_folder: media/posts
 public_folder: /media/posts
@@ -95,26 +96,27 @@ collections:
           - { name: description, label: Description (search engines), widget: text }
           - { name: instagram, label: Instagram URL, widget: string }
           - { name: instagramHandle, label: Instagram handle, widget: string }
-          - name: activeStyle
-            label: Website style
-            widget: select
-            options: [{ label: E. Local Guide, value: local-guide }, { label: F. Magazine, value: magazine }, { label: G. City Guide, value: city-guide }, { label: H. Openings Board, value: openings-board }, { label: A. Front Page, value: front-page }, { label: B. After Dark, value: after-dark }, { label: C. Trailhead, value: trailhead }, { label: D. The Weekly, value: the-weekly }]
-          - { name: showStyleSwitcher, label: Show style switcher (preview only), widget: boolean }
           - name: newsletter
             label: Newsletter
             widget: object
             fields:
               - { name: name, label: Name, widget: string }
               - { name: pitch, label: Pitch, widget: text }
-              - { name: provider, label: Provider, widget: string, hint: buttondown, kit or beehiiv }
-              - { name: action, label: Form action URL, widget: string, required: false, hint: "Buttondown: https://buttondown.com/api/emails/embed-subscribe/YOURNAME" }
+              - { name: provider, label: Provider, widget: string, hint: "google-sheet for now. Change when you pick an email service." }
+              - { name: action, label: Signup endpoint URL, widget: string, required: false, hint: "The Google Apps Script web app URL that saves signups to the NWA Next signups sheet. Empty shows 'Signups open soon'." }
               - { name: emailField, label: Email field name, widget: string, default: email }
           - name: tips
             label: Tips
             widget: object
             fields:
               - { name: pitch, label: Pitch, widget: text }
-              - { name: action, label: Form action URL, widget: string, required: false, hint: A Formspree or similar endpoint. Empty sends readers to Instagram DMs. }
+              - { name: action, label: Tip endpoint URL, widget: string, required: false, hint: "Same Apps Script URL as signups (tips land on the Tips tab). Empty sends readers to Instagram DMs." }
+          - name: analytics
+            label: Analytics
+            widget: object
+            required: false
+            fields:
+              - { name: googleId, label: Google Analytics measurement ID, widget: string, required: false, hint: "Starts with G-. Find it in Google Analytics: Admin, Data streams, your web stream." }
       - name: cities
         label: Cities
         file: content/cities.json

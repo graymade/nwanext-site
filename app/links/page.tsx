@@ -9,7 +9,7 @@ import { cards } from '@/lib/view';
 
 export const metadata = pageMeta({
   title: 'Links',
-  description: 'NWA Next: this week in Northwest Arkansas, new spots, the latest stories and the Friday email.',
+  description: 'NWA Next: this week in Northwest Arkansas, new spots, the latest stories and the newsletter.',
   path: '/links/',
   noindex: true,
 });
@@ -34,7 +34,7 @@ export default function LinksPage() {
             <h2 id="latest-title">Latest</h2>
             <ul className="rows">{cards(items().slice(0, 3)).map((c) => <Row key={c.slug} c={c} />)}</ul>
           </section>
-          <Link className="links__btn" href="/newsletter/"><span>Get the Friday email</span><Icon name="right" /></Link>
+          <Link className="links__btn" href="/newsletter/"><span>Get the newsletter</span><Icon name="right" /></Link>
           <Link className="links__btn" href="/submit/"><span>Send us a tip</span><Icon name="right" /></Link>
           <a className="links__btn" href={site.instagram}><span>Follow on Instagram</span><Icon name="right" /></a>
         </nav>

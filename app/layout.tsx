@@ -8,6 +8,8 @@ import { orgLd } from '@/lib/seo';
 
 const sans = Instrument_Sans({ subsets: ['latin'], axes: ['wdth'], display: 'swap', variable: '--font-sans' });
 const site = getSite();
+// Google Analytics (GA4) loads only when a measurement ID (G-...) is set in the CMS (Site settings, Analytics).
+const GA = /^G-[A-Z0-9]+$/.test(site.analytics?.googleId?.trim() || '') ? site.analytics!.googleId!.trim() : '';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -33,6 +35,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={sans.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT }} />
+        {GA && <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA}`} />}
+        {GA && <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA}');` }} />}
       </head>
       <body>
         {children}

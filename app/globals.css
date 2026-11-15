@@ -922,7 +922,7 @@ html.js[data-filtered]:not(.scope-ready) [data-scoped] { opacity: 0; }
 .spot__link:focus-visible { outline: 2px solid transparent; }
 .spot__meta { display: flex; flex-wrap: wrap; column-gap: 0.875rem; color: var(--muted); font-size: var(--text-meta); }
 
-/* The Friday email closing band: the sidebar's stacked form beside one line that says what it is. */
+/* The newsletter closing band: the sidebar's stacked form beside one line that says what it is. */
 .email-band {
   display: grid;
   gap: 1.25rem 3rem;

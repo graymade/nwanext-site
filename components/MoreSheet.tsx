@@ -1,5 +1,5 @@
 'use client';
-// "More" on the phone tab bar: a bottom sheet with every hub, the cities with counts and the Friday email.
+// "More" on the phone tab bar: a bottom sheet with every hub, the cities with counts and the newsletter signup.
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
@@ -87,7 +87,7 @@ export default function MoreSheet({ topics, places }: Props) {
           </section>
           {!pathname?.startsWith('/newsletter/') && (
             <section className="more__signup" aria-labelledby="more-email">
-              <h3 id="more-email" className="more__h">One email on Friday morning.</h3>
+              <h3 id="more-email" className="more__h">Get the newsletter.</h3>
               <NewsletterForm action={site.action} emailField={site.emailField} handle={site.handle} stacked />
             </section>
           )}

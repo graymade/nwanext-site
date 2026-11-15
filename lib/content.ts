@@ -48,6 +48,7 @@ export type Site = {
   instagramHandle: string;
   newsletter: { name: string; pitch: string; provider: string; action: string; emailField: string };
   tips: { action: string; pitch: string };
+  analytics?: { googleId?: string };
 };
 
 const readJson = <T,>(file: string): T => JSON.parse(fs.readFileSync(file, 'utf8')) as T;

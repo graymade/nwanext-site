@@ -8,14 +8,17 @@
   "activeStyle": "local-guide",
   "showStyleSwitcher": true,
   "newsletter": {
-    "name": "The NWA Next Weekly",
-    "pitch": "One email on Friday morning. New openings, the best things to do this weekend and what changed in your city.",
-    "provider": "buttondown",
+    "name": "The NWA Next newsletter",
+    "pitch": "New openings, things to do and what’s changing across Northwest Arkansas, straight to your inbox.",
+    "provider": "google-sheet",
     "action": "",
     "emailField": "email"
   },
   "tips": {
     "action": "",
     "pitch": "Know about a new restaurant, a shop opening or an event people should hear about? Send it our way. We check every tip with a first-hand source before it runs."
+  },
+  "analytics": {
+    "googleId": ""
   }
 }

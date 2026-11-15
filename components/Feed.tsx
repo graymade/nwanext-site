@@ -3,7 +3,7 @@
 // In Grid view on a wide main area it becomes 2 to 4 columns of 4:5 photos, with the first story
 // as a lead across the full row. Rendered on the server in full; with JavaScript 13 show, then "Show more".
 // Every card is one link (the headline's link covers the card). Only the lead carries actions.
-// The New spots row sits across the full width after two rows of cards; the Friday email closes the list.
+// The New spots row sits across the full width after two rows of cards; the newsletter signup closes the list.
 import Link from 'next/link';
 import { useEffect, useId, useRef, useState } from 'react';
 import Img from './Img';
@@ -70,8 +70,8 @@ export function EmailBand({ id = 'email-band' }: { id?: string }) {
   return (
     <section className="email-band" aria-labelledby={`${id}-title`}>
       <div className="email-band__text">
-        <h2 id={`${id}-title`} className="section-title">One email on Friday morning</h2>
-        <p>New openings, the best things to do this weekend and what changed in your city.</p>
+        <h2 id={`${id}-title`} className="section-title">Get the NWA Next newsletter</h2>
+        <p>New openings, things to do and what’s changing across Northwest Arkansas, straight to your inbox.</p>
       </div>
       <NewsletterForm action={site.action} emailField={site.emailField} handle={site.handle} stacked />
     </section>

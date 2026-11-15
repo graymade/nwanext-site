@@ -8,22 +8,21 @@ import { pageMeta } from '@/lib/seo';
 import { cards } from '@/lib/view';
 
 export const metadata = pageMeta({
-  title: 'The Friday email',
-  description: 'A free Friday email with new openings, the best things to do this weekend and what changed across Northwest Arkansas.',
+  title: 'Newsletter',
+  description: 'The free NWA Next newsletter: new openings, things to do and what’s changing across Northwest Arkansas.',
   path: '/newsletter/',
 });
 
 export default function NewsletterPage() {
   const site = getSite();
-  const pitch = site.newsletter.pitch.replace(/^One email on Friday morning\.\s*/i, '');
   return (
     <div className="page page--newsletter">
       <header className="page-head form-head section_cta14">
-        <Breadcrumbs trail={[HOME, { name: 'Friday email', href: '/newsletter/' }]} />
+        <Breadcrumbs trail={[HOME, { name: 'Newsletter', href: '/newsletter/' }]} />
         <div className="form-head__grid">
           <div className="form-head__text">
-            <h1 className="page-title">One email on Friday morning.</h1>
-            <p className="lede">{pitch}</p>
+            <h1 className="page-title">Get the NWA Next newsletter.</h1>
+            <p className="lede">{site.newsletter.pitch}</p>
           </div>
           <div className="form-card">
             <NewsletterForm action={site.newsletter.action} emailField={site.newsletter.emailField} handle={site.instagramHandle} stacked />
