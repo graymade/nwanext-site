@@ -1,0 +1,83 @@
+{
+  "intro": "The local links we keep coming back to. City services, libraries, ways to get around and places to plug in.",
+  "groups": [
+    {
+      "title": "City halls",
+      "blurb": "Council agendas, permits, trash pickup, parks and city news.",
+      "links": [
+        { "name": "City of Bentonville", "url": "https://www.bentonville.ar.gov/", "city": "Bentonville" },
+        { "name": "City of Rogers", "url": "https://www.rogersar.gov/", "city": "Rogers" },
+        { "name": "City of Springdale", "url": "https://www.springdalear.gov/", "city": "Springdale" },
+        { "name": "City of Fayetteville", "url": "https://www.fayetteville-ar.gov/", "city": "Fayetteville" },
+        { "name": "City of Farmington", "url": "https://www.cityoffarmington-ar.gov/", "city": "Farmington" }
+      ]
+    },
+    {
+      "title": "Libraries",
+      "blurb": "Free cards, programs for kids and adults, meeting rooms and a lot more than books.",
+      "links": [
+        { "name": "Bentonville Public Library", "url": "https://bentonvillelibrary.org/", "city": "Bentonville" },
+        { "name": "Rogers Public Library", "url": "https://rogerspubliclibrary.org/", "city": "Rogers" },
+        { "name": "Springdale Public Library", "url": "https://springdalelibrary.org/", "city": "Springdale" },
+        { "name": "Fayetteville Public Library", "url": "https://www.faylib.org/", "city": "Fayetteville" }
+      ]
+    },
+    {
+      "title": "Getting around",
+      "blurb": "Buses, the Greenway and the airport.",
+      "links": [
+        { "name": "Ozark Regional Transit", "url": "https://www.ozark.org/", "note": "Regional bus routes" },
+        { "name": "Razorback Greenway", "url": "https://razorbackgreenway.org/", "note": "The trail that links the region" },
+        { "name": "Northwest Arkansas National Airport (XNA)", "url": "https://www.flyxna.com/" }
+      ]
+    },
+    {
+      "title": "Things to do",
+      "blurb": "Visitor guides and downtown calendars, good for planning a weekend.",
+      "links": [
+        { "name": "Visit Bentonville", "url": "https://www.visitbentonville.com/", "city": "Bentonville" },
+        { "name": "Downtown Bentonville", "url": "https://downtownbentonville.org/", "city": "Bentonville" },
+        { "name": "Destination Rogers", "url": "https://www.destinationrogers.com/", "city": "Rogers" },
+        { "name": "Downtown Springdale", "url": "https://www.downtownspringdale.org/", "city": "Springdale" },
+        { "name": "Experience Fayetteville", "url": "https://www.experiencefayetteville.com/", "city": "Fayetteville" },
+        { "name": "Fayetteville Farmers Market", "url": "https://www.fayettevillefarmersmarket.org/", "city": "Fayetteville" }
+      ]
+    },
+    {
+      "title": "Arts and family",
+      "blurb": "Museums, stages and places to take the kids.",
+      "links": [
+        { "name": "Crystal Bridges Museum of American Art", "url": "https://crystalbridges.org/", "city": "Bentonville" },
+        { "name": "The Momentary", "url": "https://themomentary.org/", "city": "Bentonville" },
+        { "name": "Scott Family Amazeum", "url": "https://www.amazeum.org/", "city": "Bentonville" },
+        { "name": "Walton Arts Center", "url": "https://waltonartscenter.org/", "city": "Fayetteville" },
+        { "name": "Botanical Garden of the Ozarks", "url": "https://bgozarks.org/", "city": "Fayetteville" }
+      ]
+    },
+    {
+      "title": "Give and volunteer",
+      "blurb": "Good places to start if you want to help out.",
+      "links": [
+        { "name": "United Way of Northwest Arkansas", "url": "https://unitedwaynwa.org/" },
+        { "name": "Northwest Arkansas Food Bank", "url": "https://www.nwafoodbank.org/" }
+      ]
+    },
+    {
+      "title": "Business and growth",
+      "blurb": "Chambers and regional groups behind a lot of what's being built.",
+      "links": [
+        { "name": "Chamber Fayetteville", "url": "https://www.fayettevillear.com/", "city": "Fayetteville" },
+        { "name": "Springdale Chamber of Commerce", "url": "https://www.springdalechamber.com/", "city": "Springdale" },
+        { "name": "Northwest Arkansas Council", "url": "https://nwacouncil.org/" }
+      ]
+    },
+    {
+      "title": "Learn",
+      "blurb": "Classes, campuses and continuing ed.",
+      "links": [
+        { "name": "University of Arkansas", "url": "https://www.uark.edu/", "city": "Fayetteville" },
+        { "name": "NorthWest Arkansas Community College", "url": "https://www.nwacc.edu/", "city": "Bentonville" }
+      ]
+    }
+  ]
+}

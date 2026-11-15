@@ -1,0 +1,12 @@
+{
+  "receiptDirs": [
+    "../../data/publication-receipts",
+    "~/.hermes/workspace/nwa-next-live-runtime/data/publication-receipts"
+  ],
+  "packageRoots": [
+    "../../Social Production",
+    "../../Content",
+    "~/.hermes/workspace/nwa-next-live-runtime/production",
+    "~/.hermes/workspace/nwa-next-live-runtime/Candidates"
+  ]
+}

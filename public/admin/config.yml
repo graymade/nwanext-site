@@ -1,0 +1,180 @@
+# NWA Next CMS. Paths are relative to the graymade/nwanext-site repo root.
+# Local editing: open /admin on the built site in Chrome, choose "Work with Local Repository", pick the _Pocket folder.
+# Online editing: GitHub login through the sveltia-cms-auth worker (base_url below once it exists).
+backend:
+  name: github
+  repo: graymade/nwanext-site
+  branch: main
+
+media_folder: media/posts
+public_folder: /media/posts
+
+site_url: https://nwanext.com
+logo_url: /apple-touch-icon.png
+
+collections:
+  - name: articles
+    label: Stories
+    label_singular: Story
+    description: Published Instagram posts sync here automatically. Edit freely; the sync never overwrites a story once it exists.
+    folder: content/articles
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [date, title, city]
+    summary: "{{title}} · {{city}} · {{date | date('MMM D')}}"
+    view_filters:
+      - { label: Opening, field: status, pattern: opening }
+      - { label: Building, field: status, pattern: building }
+      - { label: Featured, field: featured, pattern: true }
+    view_groups:
+      - { label: City, field: city }
+      - { label: Topic, field: category }
+    fields:
+      - { name: title, label: Headline, widget: string }
+      - { name: date, label: Published, widget: datetime }
+      - name: city
+        label: City
+        widget: select
+        options: [Bentonville, Rogers, Springdale, Fayetteville, Farmington, Northwest Arkansas, Siloam Springs, Lowell, Bella Vista, Cave Springs, Prairie Grove, Eureka Springs]
+      - name: category
+        label: Topic
+        widget: select
+        options: [Food & Drink, Events, Arts & Music, Outdoors, Development, Business, News]
+      - name: status
+        label: Status
+        widget: select
+        required: false
+        hint: Drives the tracker and the opening/closing/building/changing filters. Leave blank for events.
+        options: [opening, closing, building, changing]
+      - { name: summary, label: Summary, widget: text, required: false, hint: One or two sentences for cards and search results. }
+      - { name: event_date, label: Event date, widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }
+      - { name: featured, label: Lead story, widget: boolean, default: false, hint: The newest featured story becomes the homepage lead. }
+      - { name: free, label: Free, widget: boolean, default: false, required: false, hint: Adds it to Free things to do. Stories that say "free" are added automatically. }
+      - { name: body, label: Story, widget: markdown }
+      - { name: image, label: Photo, widget: image, required: false, hint: The source photo. Shown at the top of the story and on cards. }
+      - { name: image_alt, label: Photo description, widget: text, required: false }
+      - { name: show_image, label: Show photo, widget: boolean, default: true, hint: "Sourced photos show with a small credit (Sam, 2026-11-01). Untick to hide one, for example if the owner asks." }
+      - { name: graphic, label: Instagram graphic, widget: image, required: false, hint: The exact image posted to Instagram. }
+      - { name: media_locked, label: Keep my photo, widget: boolean, default: false, required: false, hint: Stops the sync from re-picking this story's photo. }
+      - { name: credits, label: Photo credits, widget: list, required: false, hint: 'Short, like "Photo: Name" or "Image via Source".' }
+      - name: sources
+        label: Sources
+        widget: list
+        required: false
+        fields:
+          - { name: name, label: Name, widget: string }
+          - { name: url, label: Link, widget: string, required: false }
+      - { name: instagram, label: Instagram post, widget: string, required: false }
+      - { name: instagram_also, label: Second Instagram link (Reel), widget: string, required: false }
+      - { name: format, label: Format, widget: select, options: [post, reel], default: post }
+      - { name: tags, label: Hashtags, widget: list, required: false }
+      - { name: story_id, label: Newsroom story ID, widget: hidden, required: false }
+      - { name: synced_from, label: Synced from, widget: hidden, required: false }
+
+  - name: guides
+    label: Guides
+    folder: content/guides
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: summary, label: Summary, widget: text }
+      - { name: order, label: Order, widget: number, default: 10 }
+      - { name: body, label: Guide, widget: markdown }
+
+  - name: settings
+    label: Site settings
+    files:
+      - name: site
+        label: Site, newsletter and tips
+        file: content/site.json
+        fields:
+          - { name: name, label: Site name, widget: string }
+          - { name: url, label: Site address, widget: string }
+          - { name: tagline, label: Tagline, widget: string }
+          - { name: description, label: Description (search engines), widget: text }
+          - { name: instagram, label: Instagram URL, widget: string }
+          - { name: instagramHandle, label: Instagram handle, widget: string }
+          - name: activeStyle
+            label: Website style
+            widget: select
+            options: [{ label: E. Local Guide, value: local-guide }, { label: F. Magazine, value: magazine }, { label: G. City Guide, value: city-guide }, { label: H. Openings Board, value: openings-board }, { label: A. Front Page, value: front-page }, { label: B. After Dark, value: after-dark }, { label: C. Trailhead, value: trailhead }, { label: D. The Weekly, value: the-weekly }]
+          - { name: showStyleSwitcher, label: Show style switcher (preview only), widget: boolean }
+          - name: newsletter
+            label: Newsletter
+            widget: object
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: pitch, label: Pitch, widget: text }
+              - { name: provider, label: Provider, widget: string, hint: buttondown, kit or beehiiv }
+              - { name: action, label: Form action URL, widget: string, required: false, hint: "Buttondown: https://buttondown.com/api/emails/embed-subscribe/YOURNAME" }
+              - { name: emailField, label: Email field name, widget: string, default: email }
+          - name: tips
+            label: Tips
+            widget: object
+            fields:
+              - { name: pitch, label: Pitch, widget: text }
+              - { name: action, label: Form action URL, widget: string, required: false, hint: A Formspree or similar endpoint. Empty sends readers to Instagram DMs. }
+      - name: cities
+        label: Cities
+        file: content/cities.json
+        fields:
+          - name: cities
+            label: Cities
+            widget: list
+            root: true
+            fields:
+              - { name: slug, label: Slug, widget: string }
+              - { name: name, label: Name, widget: string }
+              - { name: county, label: County, widget: string }
+              - { name: intro, label: Intro, widget: text }
+              - { name: lat, label: Latitude, widget: number, value_type: float }
+              - { name: lon, label: Longitude, widget: number, value_type: float }
+              - { name: featured, label: Featured (shown in menus and the home page), widget: boolean, default: false }
+      - name: resources
+        label: Local directory
+        file: content/resources.json
+        fields:
+          - { name: intro, label: Intro, widget: text }
+          - name: groups
+            label: Groups
+            widget: list
+            fields:
+              - { name: title, label: Title, widget: string }
+              - { name: blurb, label: Blurb, widget: text }
+              - name: links
+                label: Links
+                widget: list
+                fields:
+                  - { name: name, label: Name, widget: string }
+                  - { name: url, label: URL, widget: string }
+                  - { name: city, label: City, widget: string, required: false }
+                  - { name: note, label: Note, widget: string, required: false }
+      - name: photos
+        label: Place photos
+        file: content/photos.json
+        description: Photos of the cities used on the homepage and city pages. Keep the author and license exactly as the source lists them.
+        fields:
+          - name: photos
+            label: Photos
+            widget: list
+            root: true
+            summary: "{{caption}} ({{license}})"
+            fields:
+              - { name: slug, label: ID, widget: string }
+              - { name: src, label: Image path, widget: string }
+              - { name: width, label: Width, widget: number }
+              - { name: height, label: Height, widget: number }
+              - { name: city, label: City, widget: string }
+              - { name: caption, label: Caption, widget: string }
+              - { name: author, label: Author, widget: string }
+              - { name: license, label: License, widget: string }
+              - { name: license_url, label: License link, widget: string, required: false }
+              - { name: source, label: Source page, widget: string }
+              - { name: title, label: Source title, widget: string, required: false }
+      - name: handles
+        label: Instagram handle names
+        file: content/handles.json
+        description: How @handles read in synced headlines, for example themomentary becomes The Momentary.
+        fields:
+          - { name: handles, label: Handles, widget: keyvalue, root: true, key_label: Handle, value_label: Name }

@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.next-dev/
+.next-build/
+out/
+next-env.d.ts
+*.tsbuildinfo
+public/media/
+lib/media.json
+qa/
+
+.DS_Store
+reference/
+.env*

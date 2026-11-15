@@ -1,0 +1,26 @@
+{
+  "name": "nwa-next-pocket",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/images.mjs && NEXT_DIST_DIR=.next-dev next dev -p 3035",
+    "dev:preview": "node scripts/images.mjs && NWA_NOW=2026-09-21T23:00:00-05:00 NEXT_DIST_DIR=.next-dev next dev -p 3035",
+    "build": "node scripts/images.mjs && NEXT_DIST_DIR=.next-build next build && rm -rf out && cp -r .next-build out && node scripts/postbuild.mjs",
+    "typecheck": "tsc --noEmit",
+    "qa": "node scripts/qa.mjs"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^14.1.4",
+    "next": "^15.5.20",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "playwright-core": "^1.50.0",
+    "sharp": "^0.34.0",
+    "typescript": "^5.7.2"
+  }
+}
