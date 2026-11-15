@@ -20,7 +20,9 @@ fi
 git pull --rebase --quiet origin main   # pick up CMS edits made online
 node scripts/sync-from-newsroom.mjs
 
-if [ -z "$(git status --porcelain -- content media)" ]; then
+# The sync always rewrites content/sync-log.json; only new stories or media count as news.
+if [ -z "$(git status --porcelain -- content/articles media)" ]; then
+  git checkout --quiet -- content/sync-log.json 2>/dev/null || true
   echo "No new posts. Nothing to publish."
   exit 0
 fi
