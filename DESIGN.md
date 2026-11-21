@@ -1,3 +1,5 @@
+> **Superseded 2026-11-21.** The live site now uses the Field Guide design (Round 4 comp in `../_Round4/`, render templates in `lib/render/`). This file describes the older K Pocket design and is kept as history.
+
 # K. Pocket: design spec
 
 Read `BUILD_RULES.md` first (limits, foundation, site map, SEO, CSS rules, checks). This file is the design and the single source of truth for it.

@@ -111,7 +111,10 @@ export function factsFor(a: Article): Facts {
   }
 
   if (found) {
-    const t = parseTime(found.after);
+    // The caption's own clock or calendar line ("🕒 Sat Nov 21, 3 to 4:30 PM") says the time best; then the text after the date.
+    const line = (a.text.match(/^\s*[\u{1F550}-\u{1F567}\u{1F5D3}\u{1F4C5}\u{23F0}].*$/mu) || [])[0] || '';
+    const fromLine = parseTime(line);
+    const t = fromLine.time ? fromLine : parseTime(found.after);
     const price = a.free ? 'Free' : text.match(/\$\d+(?:\.\d{2})?(?!,\d)/)?.[0];
     const last = found.end || found.start;
     return { kind: 'event', start: found.start, end: found.end, ...t, price, upcoming: last >= TODAY, ...base };
