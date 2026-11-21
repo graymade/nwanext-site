@@ -124,6 +124,7 @@ const existing = existingCodes();
     try { const e = await embed(p.code); img = e.src || ''; if (!caption && e.caption) caption = e.caption; } catch { /* the post still imports without a picture */ }
     await new Promise((r) => setTimeout(r, 900)); // gentle: about one request a second
     if (!caption) { failed.push(`${p.code} (no caption)`); continue; }
+    caption = caption.replace(/[<>]/g, ''); // captions are text: no raw HTML can reach the Markdown (or the RSS feed built from it)
     const { text, tags, sourceNames, credits } = parseCaption(caption);
     const title = trimTitle(plainHandles(firstSentence(text) || 'NWA Next update'));
     const date = new Date(p.date).toISOString();
