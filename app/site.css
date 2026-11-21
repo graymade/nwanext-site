@@ -227,9 +227,9 @@ h1.askh{font-size:clamp(2.4rem,6.2vw,6rem)}
 .ev[open]::details-content{block-size:auto}
 .evx{display:grid;gap:1.25rem;padding:.25rem 0 1.75rem 6.75rem;max-inline-size:64rem}
 .sum{font-size:1.15rem;max-inline-size:58ch}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:1rem 1.5rem}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,9rem),1fr));gap:1rem 1.5rem}
 .facts dt{font-size:.9rem;color:var(--muted);font-weight:600}
-.facts dd{font-weight:550;line-height:1.35}
+.facts dd{font-weight:550;line-height:1.35;overflow-wrap:anywhere;min-inline-size:0}
 .facts a{border-block-end:1.5px solid;font-weight:650}
 .evx .acts .more{margin-inline-start:.5rem}
 .empty{padding-block:1.75rem;border-block-start:1px solid var(--ink);display:grid;gap:1rem;justify-items:start}
@@ -504,7 +504,7 @@ html.js .big:not(.in) .bigsvg{translate:0 112%}
 .srcs li{font-weight:600}
 .fix{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;color:var(--muted);margin-block-start:2rem}
 .stside{display:grid;gap:1.4rem;background:var(--card);border-radius:24px;padding:1.5rem;box-shadow:0 0 0 1px var(--rule)}
-.stside .facts{grid-template-columns:1fr}
+.stside .facts{grid-template-columns:minmax(0,1fr)}
 .spots.rel{grid-template-columns:repeat(3,1fr)}
 .spots.rel img{aspect-ratio:4/3}
 

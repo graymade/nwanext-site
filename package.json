@@ -8,7 +8,9 @@
     "typecheck": "tsc --noEmit",
     "qa": "node scripts/qa.mjs",
     "sync": "node scripts/sync-from-newsroom.mjs",
-    "sync:deploy": "bash scripts/sync-deploy.sh"
+    "sync:deploy": "bash scripts/sync-deploy.sh",
+    "ig:sync": "node scripts/sync-instagram.mjs",
+    "ig:check": "node scripts/sync-instagram.mjs --check"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

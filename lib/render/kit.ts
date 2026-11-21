@@ -128,7 +128,7 @@ export function view(i: Item): V {
   const sources = a.sources.filter((x) => x.name).length ? a.sources.filter((x) => x.name) : said ? [{ name: said }] : [];
   const cat = [a.free && 'free', i.category === 'Arts & Music' && 'music', i.category === 'Outdoors' && 'outside'].filter(Boolean).join(' ');
   return {
-    slug: i.slug, href: i.href, title: a.title, name: short(cleanTitle(a.title), 34), city: i.city, topic: i.category, summary: a.summary,
+    slug: i.slug, href: i.href, title: a.title, name: short(cleanTitle(a.title), 70), city: i.city, topic: i.category, summary: a.summary,
     kind, upcoming: f.upcoming, featured: a.featured, free: a.free, date,
     posted: new Date(a.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: TZ }), postedIso: a.date,
     day: fmt(date, { weekday: 'short' }), dayLong: fmt(date, { weekday: 'long' }), mon: fmt(date, { month: 'short' }), dnum: +fmt(date, { day: 'numeric' }),
