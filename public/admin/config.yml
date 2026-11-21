@@ -94,6 +94,7 @@ collections:
           - { name: url, label: Site address, widget: string }
           - { name: tagline, label: Tagline, widget: string }
           - { name: description, label: Description (search engines), widget: text }
+          - { name: email, label: Contact email (shown for tips and on the privacy page), widget: string, default: hello@nwanext.com }
           - { name: instagram, label: Instagram URL, widget: string }
           - { name: instagramHandle, label: Instagram handle, widget: string }
           - name: newsletter

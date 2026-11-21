@@ -1,29 +1,9 @@
-import Browse from '@/components/Browse';
-import PageHead, { HOME } from '@/components/PageHead';
-import { items } from '@/lib/data';
+import Html from '@/components/Html';
 import { pageMeta } from '@/lib/seo';
-import { browseBase, cards } from '@/lib/view';
+import * as P from '@/lib/render/pages';
 
-export const metadata = pageMeta({
-  title: 'All stories',
-  description: 'Every NWA Next story, newest first: openings, events, development and local news from every town we cover in Northwest Arkansas.',
-  path: '/news/',
-});
+export const metadata = pageMeta({ title: 'News', description: 'What’s being built, proposed and changed across Benton and Washington counties, with the source on every story.', path: '/news/' });
 
-export default function NewsPage() {
-  const { ctx, topics } = browseBase();
-  return (
-    <div className="page page--news">
-      <Browse
-        variant="feed"
-        list={cards(items())}
-        facets={['show', 'city', 'topic', 'when', 'free']}
-        topics={topics}
-        ctx={ctx}
-        viewSwitch
-        label="All stories"
-        head={<PageHead trail={[HOME, { name: 'All stories', href: '/news/' }]} title="All stories" />}
-      />
-    </div>
-  );
+export default function Page() {
+  return <><Html html={P.newsPage()} /></>;
 }

@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page('/about/', 0.4),
     page('/submit/', 0.4),
     page('/credits/', 0.2),
+    page('/privacy/', 0.2),
     ...articles.map((a) => ({ url: absoluteUrl(`/news/${a.slug}/`), lastModified: a.date, priority: 0.7 })),
   ];
 }

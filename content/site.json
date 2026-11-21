@@ -1,8 +1,8 @@
 {
   "name": "NWA Next",
   "url": "https://nwanext.com",
-  "tagline": "What’s opening, closing, building, and changing across Northwest Arkansas.",
-  "description": "NWA Next tracks what's opening, closing, building and changing in Bentonville, Rogers, Springdale, Fayetteville and Farmington. New restaurants, local events and things worth making plans around, with sources on every story.",
+  "tagline": "New eats, events & openings across Northwest Arkansas. If it’s worth leaving the house for, it’s here.",
+  "description": "New eats, events and openings across Benton and Washington counties in Northwest Arkansas: Bentonville, Rogers, Springdale, Fayetteville, Farmington and the towns around them. Sources and photo credits on every story.",
   "instagram": "https://www.instagram.com/nwa_next/",
   "instagramHandle": "nwa_next",
   "activeStyle": "local-guide",
@@ -16,9 +16,10 @@
   },
   "tips": {
     "action": "https://script.google.com/macros/s/AKfycbwrLKBGE6hm6gxWITSHsR2a5OWQv5ZQ6LekChItDxTpwzs0AnkybfR4To5cy4H-UvUkOA/exec",
-    "pitch": "Know about a new restaurant, a shop opening or an event people should hear about? Send it our way. We check every tip with a first-hand source before it runs."
+    "pitch": "Know about a new restaurant, a shop opening or an event people should hear about? Send it our way, or email hello@nwanext.com."
   },
   "analytics": {
     "googleId": "G-40S9WGKF8B"
-  }
+  },
+  "email": "hello@nwanext.com"
 }

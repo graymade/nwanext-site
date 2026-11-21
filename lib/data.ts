@@ -41,7 +41,8 @@ export const inRange = (i: Item, from: string, to: string) => i.facts.start! <= 
 
 export function cityStats() {
   const list = items();
-  return getCities().map((c) => {
+  // Benton and Washington counties only (Sam, 2026-11-21); cities.json keeps every town for the sync.
+  return getCities().filter((c) => /Benton|Washington/.test(c.county)).map((c) => {
     const mine = list.filter((i) => i.city === c.name);
     return { ...c, href: `/cities/${c.slug}/`, count: mine.length, upcoming: upcoming(mine).length, latest: mine[0] };
   });
