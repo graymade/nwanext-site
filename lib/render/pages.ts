@@ -3,7 +3,7 @@ import { getGuides, getPhotos, getResources, getSite, slugify, type City } from 
 import { PLACES, TOPICS, placeBySlug, type Topic } from '../taxonomy';
 import { addDays } from '../now';
 import { B, CITIES, COUNTIES, I, all, badge, calMenu, cityUrl, countyOf, data, esc, ext, factsDl, img, label, lb, mark, INK, CLAY, more, news, openings, pastEvents, pick, pickMenu, save, short, showDay, split, today, townOpts, upcoming, wd, type V } from './kit';
-import { agendaRows, around, countsFor, hero, heroSlides, newsItem, onBlock, pghead, secHead, spotCard, townsBlock, weekendsBlock } from './blocks';
+import { subButtons, agendaRows, around, countsFor, hero, heroSlides, newsItem, onBlock, pghead, secHead, spotCard, townsBlock, weekendsBlock } from './blocks';
 import { EMAIL, SOURCING, TAG, newsletterForm, shell, tipForm, tipStones } from './shell';
 import { countsOf, townData, townMap } from './towns';
 
@@ -63,7 +63,7 @@ export function town(c: City) {
   const base = ph?.src.replace(/\.[^.]+$/, '');
   const phImg = ph ? `<img src="${base}-1600.webp" srcset="${[480, 800, 1200, 1600].map((s) => `${base}-${s}.webp ${s}w`).join(', ')}" sizes="100vw" alt="${esc(ph.caption)}" fetchpriority="high">` : '';
   return shell({ cur: '/cities/', body: `<section class="thero ${ph ? 'photo' : 'plain'}">${phImg}<div class="copy wrap"><h1 class="split">${split(c.name)}</h1><p>${esc(c.intro)}</p><p class="cty">${esc(c.county)}</p></div></section>
-${mine.length ? '' : '<!--'}<section class="sec wrap rv">${secHead(`What’s on in ${c.name}`, ['/events/', 'All events'])}${ev.length ? `<div class="agenda solo">${agendaRows(ev)}</div>` : `<p class="nothing">Nothing coming up in ${esc(c.name)} yet. We add events as soon as we confirm them. ${B('Tell us about one', { cls: 'line sm', attrs: 'data-open="tip" data-kind="event"' })}</p>`}</section>${mine.length ? '' : '-->'}
+${mine.length ? `<section class="sec wrap rv">${secHead(`What’s on in ${c.name}`, ['/events/', 'All events'])}${ev.length ? `<div class="agenda solo">${agendaRows(ev)}</div>` : `<p class="nothing">Nothing coming up in ${esc(c.name)} yet. We add events as soon as we confirm them. ${B('Tell us about one', { cls: 'line sm', attrs: 'data-open="tip" data-kind="event"' })}</p>`}</section>` : ''}
 ${sp.length ? `<section class="sec wrap rv tight">${secHead(`New in ${c.name}`)}<div class="spots">${sp.slice(0, 3).map((v) => spotCard(v)).join('')}</div></section>` : ''}
 ${nw.length ? `<section class="sec wrap rv tight">${secHead(`Changing in ${c.name}`)}<div class="around">${nw.map((v) => `<a href="${v.href}"><h3>${esc(v.title)}</h3><span>${v.posted}</span></a>`).join('')}</div></section>` : ''}
 ${recent.length ? `<section class="sec wrap rv tight">${secHead(`Recently in ${c.name}`)}<div class="spots">${recent.map((v) => spotCard(v, '30vw', '', '')).join('')}</div></section>` : ''}
@@ -154,19 +154,20 @@ ${h('contact', 'Contact')}<p>Questions about this page: <a href="mailto:${EMAIL}
 export function calendar() {
   const ev = all().filter((v) => v.kind === 'event' && v.startRaw);
   const month = today.slice(0, 7);
-  const months = [...new Set([month, ...ev.map((v) => showDay(v).slice(0, 7))])].sort();
+  const span = (v: V) => { const out: string[] = []; for (let k = v.date; k <= (v.endDate || v.date) && out.length < 62; k = addDays(k, 1)) out.push(k); return out; };
+  const months = [...new Set([month, ...ev.flatMap((v) => span(v).map((k) => k.slice(0, 7)))])].sort();
   const mlabel = (m: string) => new Date(`${m}-15T12:00:00Z`).toLocaleDateString('en-US', { timeZone: 'UTC', month: 'long', year: 'numeric' });
   const grid = (m: string) => {
     const first = `${m}-01`, d0 = new Date(`${first}T12:00:00Z`), start = addDays(first, -((d0.getUTCDay() + 6) % 7));
     const cells = Array.from({ length: 42 }, (_, i) => addDays(start, i)).filter((k, i) => i < 35 || k.slice(0, 7) === m);
-    const mine = ev.filter((v) => showDay(v).slice(0, 7) === m).sort((a, b) => (a.startRaw < b.startRaw ? -1 : 1));
+    const mine = ev.filter((v) => span(v).some((k) => k.slice(0, 7) === m)).sort((a, b) => (a.startRaw < b.startRaw ? -1 : 1));
     return `<section class="cmonth" data-m="${m}" ${m === month ? '' : 'hidden'} aria-label="${mlabel(m)}"><div class="cgrid" role="table"><div class="cwk" role="row">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => `<span role="columnheader">${d}</span>`).join('')}</div>
-<div class="cdays">${cells.map((k) => { const es = mine.filter((v) => showDay(v) === k); return `<div class="cday ${k.slice(0, 7) !== m ? 'out' : ''} ${k === today ? 'now' : ''} ${es.length ? 'has' : ''}" role="cell"><b>${+k.slice(8)}</b>${es.map((v) => `<a href="${v.href}" class="${v.free ? 'free' : ''}">${esc(v.name)}</a>`).join('')}</div>`; }).join('')}</div></div>
+<div class="cdays">${cells.map((k) => { const es = mine.filter((v) => v.date <= k && (v.endDate || v.date) >= k); return `<div class="cday ${k.slice(0, 7) !== m ? 'out' : ''} ${k === today ? 'now' : ''} ${es.length ? 'has' : ''}" role="cell"><b>${+k.slice(8)}</b>${es.map((v) => `<a href="${v.href}" class="${v.free ? 'free' : ''}">${esc(v.name)}</a>`).join('')}</div>`; }).join('')}</div></div>
 <div class="clist">${mine.length ? agendaRows(mine) : `<p class="nothing">Nothing on the calendar for ${mlabel(m)} yet.</p>`}</div></section>`;
   };
   return shell({ body: `${pghead('Events calendar', 'Every event we’ve covered across Benton and Washington counties, a month at a time. Subscribe once and new events show up in your calendar on their own.')}
 <section class="wrap rv cal"><div class="chead"><h2 class="cml" aria-live="polite">${mlabel(month)}</h2><div class="arrows"><button type="button" class="arw" data-cm="-1" aria-label="Earlier month">${I.left}</button><button type="button" class="arw" data-cm="1" aria-label="Later month">${I.arrow}</button></div>
-<div class="acts subs">${B('Apple', { cls: 'line sm', href: 'webcal://nwanext.com/calendar.ics', icon: I.cal })}${B('Google', { cls: 'line sm', href: 'https://calendar.google.com/calendar/r?cid=webcal://nwanext.com/calendar.ics', attrs: ext })}${B('Outlook', { cls: 'line sm', href: 'webcal://nwanext.com/calendar.ics' })}</div></div>
+${subButtons('acts subs')}</div>
 ${months.map(grid).join('')}${data('months', months.map((m) => [m, mlabel(m)]))}</section>` });
 }
 
@@ -228,7 +229,7 @@ ${['Give and volunteer', 'Things to do'].map(pickG).filter(Boolean).map((g) => `
 <section class="sec wrap rv"><p class="nothing">More local links: ${B('City halls, libraries and getting around', { cls: 'line sm', href: '/guides/#directory', icon: I.arrow })}</p></section>` });
 }
 export function newsletterPage() {
-  return shell({ letterBand: false, body: `<section class="letter solo"><div class="wrap">
+  return shell({ letterBand: false, body: `<section class="letter solo" id="letter"><div class="wrap">
 <div class="lhead"><h1 class="split">${wd(['Find', 'out', 'what’s', 'next<span class="pd">.</span>'], 3)}</h1>${badge('live')}</div>
 <div class="lrow"><p>${esc(getSite().newsletter.pitch)} Free, and you can leave any time.</p>${newsletterForm('em2')}<p class="ok" role="status" hidden>You’re on the list. Look out for the first one.</p></div></div></section>
 <section class="sec wrap rv">${secHead('Recent stories', ['/news/', 'All news'])}<div class="spots">${latest().slice(0, 3).map((v) => spotCard(v, '30vw', '', v.kind === 'opening' ? 'New spot' : '')).join('')}</div></section>` });

@@ -1,5 +1,6 @@
 // Blocks shared by several pages: the hero, the "Show me ... in ..." agenda, weekends, cards and the towns list.
 import { addDays } from '../now';
+import { subscribeLinks } from '../ics';
 import { B, CITIES, I, WHAT, calMenu, cityUrl, data, esc, factsDl, img, label, lb, more, pick, pickMenu, save, short, showDay, split, today, townOpts, upcoming, when, wd, type V } from './kit';
 
 // ---------------------------------------------------------------- hero
@@ -31,13 +32,15 @@ export const agendaRows = (list: V[]) => {
   return groups.map((g) => { const d = new Date(`${g.k}T12:00:00Z`), o = (x: Intl.DateTimeFormatOptions) => d.toLocaleDateString('en-US', { timeZone: 'UTC', ...x });
     return `<section class="day" data-date="${g.k}"><h3 class="dayh"><b>${o({ day: 'numeric' })}</b> ${o({ weekday: 'long' })}, ${o({ month: 'short' })}</h3>${g.items.map(evRow).join('')}</section>`; }).join('');
 };
+// Subscribe to every event: Apple (webcal), Google and Outlook web, from lib/ics.ts.
+export const subButtons = (cls = 'acts') => { const L = subscribeLinks('/calendar.ics'); return `<div class="${cls}">${B('Apple', { cls: 'line sm', href: L.apple, icon: I.cal })}${B('Google', { cls: 'line sm', href: L.google, attrs: 'target="_blank" rel="noopener"' })}${B('Outlook', { cls: 'line sm', href: L.outlook, attrs: 'target="_blank" rel="noopener"' })}</div>`; };
 export const plansPanels = () => `<aside class="side">
 <div class="plansp" id="plans"><h3>My plans <b class="pc">0</b></h3><ul></ul><p class="pe">Tap Save on anything you want to go to. It stays on this device, no account needed.</p>${B('Add all to my calendar', { cls: 'clay allcal', icon: I.cal })}</div>
-<div class="subp"><h3>Every event, in your calendar</h3><p>Subscribe once and new events show up on their own.</p><div class="acts">${B('Apple', { cls: 'line sm', href: 'webcal://nwanext.com/calendar.ics' })}${B('Google', { cls: 'line sm', href: 'https://calendar.google.com/calendar/r?cid=webcal://nwanext.com/calendar.ics', attrs: 'target="_blank" rel="noopener"' })}${B('Outlook', { cls: 'line sm', href: 'webcal://nwanext.com/calendar.ics' })}</div></div></aside>`;
+<div class="subp"><h3>Every event, in your calendar</h3><p>Subscribe once and new events show up on their own.</p>${subButtons()}</div></aside>`;
 const wkLabel = () => { const d = new Date(`${today}T12:00:00Z`), mon = addDays(today, -((d.getUTCDay() + 6) % 7)), sun = addDays(mon, 6), f = (k: string, o: Intl.DateTimeFormatOptions) => new Date(`${k}T12:00:00Z`).toLocaleDateString('en-US', { timeZone: 'UTC', ...o });
   return `${f(mon, { month: 'short', day: 'numeric' })}–${mon.slice(5, 7) === sun.slice(5, 7) ? f(sun, { day: 'numeric' }) : f(sun, { month: 'short', day: 'numeric' })}`; };
 // Event data for site.js (week strip, plans, calendar files).
-export const evData = (list: V[]) => data('ev', { now: today, ev: list.map((v) => ({ id: v.slug, t: v.name, s: v.startRaw, e: v.endRaw || v.startRaw, l: v.full, u: `https://nwanext.com${v.href}`, d: `${v.day}, ${v.mon} ${v.dnum}`, date: showDay(v), city: v.city, c: v.cat })) });
+export const evData = (list: V[]) => data('ev', { now: today, ev: list.map((v) => ({ id: v.slug, t: v.name, s: v.icsS, e: v.icsE, l: v.full, u: `https://nwanext.com${v.href}`, d: `${v.day}, ${v.mon} ${v.dnum}`, date: showDay(v), city: v.city, c: v.cat })) });
 export const onBlock = (hTag = 'h2', id = 'on') => { const up = upcoming(); return `<section class="wrap ask rv" id="${id}"><${hTag} class="askh split">${wd(['Show', 'me', pick('what', WHAT, 'What'), 'in', pick('town', townOpts(up), 'Town')])}</${hTag}>
 ${pickMenu('what', WHAT, 'Pick what')}${pickMenu('town', townOpts(up), 'Pick a town')}
 <div class="wknav"><p class="wkl" aria-live="polite"><small>This week</small> <b>${wkLabel()}</b></p><button type="button" class="arw" data-wk="-1" aria-label="Previous week">${I.left}</button><button type="button" class="arw" data-wk="1" aria-label="Next week">${I.arrow}</button><button type="button" class="clear" hidden>Show the whole week</button></div>

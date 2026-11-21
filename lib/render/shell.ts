@@ -2,7 +2,9 @@
 import { getSite } from '../content';
 import { B, I, INK, CLAY, CLAY_HI, PAPER, badge, bigMark, blob, esc, lb, mark, smooth, split, wd } from './kit';
 
-export const EMAIL = (getSite() as { email?: string }).email || 'hello@nwanext.com'; // Sam, 2026-11-21: tips by the site form or by email (CMS: Site settings)
+// Sam, 2026-11-21: tips by the site form or by email (CMS: Site settings). Anything that isn't a plain address falls back, so CMS text can't add markup.
+const RAW_EMAIL = String((getSite() as { email?: string }).email || '').trim();
+export const EMAIL = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(RAW_EMAIL) ? RAW_EMAIL : 'hello@nwanext.com';
 export const TAG = ['New eats, events & openings across Northwest Arkansas.', 'If it’s worth leaving the house for, it’s here.'];
 // How NWA Next sources its stories, in Sam's words (2026-11-21). Used on About, Credits, Privacy and the tip form.
 export const SOURCING = 'We pull information and photos from published sources and from the businesses and organizations we write about, and we always credit where they came from.';

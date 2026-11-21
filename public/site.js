@@ -72,6 +72,21 @@
     });
   });
 
+  // A picker set from code (old links), without opening it or moving focus.
+  const slug = (t) => String(t).toLowerCase().replace(/&/g, 'and').replace(/[’']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const setPick = (key, test) => {
+    const b = $(`#p-${key}`), o = $$(`#pm-${key} [role=option]`).find((x) => test(x.dataset.value)); if (!b || !o) return false;
+    $$(`#pm-${key} [role=option]`).forEach((x) => x.setAttribute('aria-selected', x === o)); b.dataset.value = o.dataset.value; b.querySelector('.v').textContent = o.dataset.t;
+    document.dispatchEvent(new CustomEvent('pick', { detail: { key, value: o.dataset.value } })); return true;
+  };
+  const LQ = new URLSearchParams(location.search);
+  // ?city=rogers&free=1&topic=arts-and-music (links from the old site)
+  const legacy = () => {
+    const city = (LQ.get('city') || '').split(',')[0]; if (city) setPick('town', (v) => slug(v) === city);
+    const topic = LQ.get('topic') || LQ.get('category') || '', what = LQ.get('free') === '1' ? 'free' : /arts|music/.test(topic) ? 'music' : /outdoor/.test(topic) ? 'outside' : '';
+    if (what) setPick('what', (v) => v === what);
+  };
+
   // ---------- sentence pickers. Counts come from the page (window.countFor), so a choice with nothing says so first.
   $$('.pm').forEach((p) => {
     const b = $(`[popovertarget="${p.id}"]`), opts = $$('[role=option]', p), key = b.dataset.key;
@@ -88,7 +103,7 @@
   try { P = JSON.parse(localStorage.getItem(K) || '[]'); } catch { P = []; }
   const byId = (id) => EV.find((e) => e.id === id);
   const syncPlans = (bump) => {
-    localStorage.setItem(K, JSON.stringify(P));
+    try { localStorage.setItem(K, JSON.stringify(P)); } catch { /* storage blocked: plans live in memory for this visit */ }
     $$('.save').forEach((b) => { const on = P.includes(b.dataset.id); b.setAttribute('aria-pressed', on); setLabel(b, on ? 'Saved' : 'Save'); });
     $$('.plans b,.pc').forEach((b) => { b.textContent = P.length; if (bump) { b.classList.add('bump'); setTimeout(() => b.classList.remove('bump'), 260); } });
     const ul = $('.plansp ul'); if (!ul) return;
@@ -117,7 +132,8 @@
     const [prev, next] = $$('[data-wk]'), d0 = day(NOW), mon = new Date(d0); mon.setDate(d0.getDate() - ((d0.getDay() + 6) % 7));
     const at = (w, i) => { const d = new Date(mon); d.setDate(mon.getDate() + w * 7 + i); return d; };
     const last = EV.reduce((m, e) => (e.date > m ? e.date : m), NOW);
-    const weeks = Math.floor((day(last) - mon) / 864e5 / 7) + 1;
+    const dk = (s) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+    const weeks = Math.floor((dk(last) - dk(ymd(mon))) / 864e5 / 7) + 1;
     const okTown = (c) => st.town === 'all' || c === st.town, okWhat = (c) => st.what === 'all' || c.split(' ').includes(st.what);
     const inWeek = (date, w) => date >= ymd(at(w, 0)) && date <= ymd(at(w, 6));
     const inScope = (date) => (st.days.size ? st.days.has(date) : inWeek(date, st.week));
@@ -152,7 +168,9 @@
     // events.html?from=YYYY-MM-DD&to=YYYY-MM-DD (the weekend cards link here)
     const q = new URLSearchParams(location.search), D = /^\d{4}-\d{2}-\d{2}$/, from = D.test(q.get('from') || '') ? q.get('from') : null, to0 = q.get('to'), to = D.test(to0 || '') && to0 >= from && (day(to0) - day(from)) / 864e5 <= 14 ? to0 : null; // a weekend, never an open-ended range
     if (from) { for (let w = 0; w < weeks; w++) if (inWeek(from, w)) st.week = w; for (let d = day(from); ymd(d) <= (to || from); d.setDate(d.getDate() + 1)) st.days.add(ymd(d)); }
-    render();
+    // ?when=weekend (old links): the days left of this Friday to Sunday
+    else if (LQ.get('when') === 'weekend') { const d = day(NOW), dow = d.getDay(), f = new Date(d); f.setDate(d.getDate() + (dow === 0 ? -2 : dow === 6 ? -1 : 5 - dow)); for (let i = 0; i < 3; i++) { const x = new Date(f); x.setDate(f.getDate() + i); if (ymd(x) >= NOW) st.days.add(ymd(x)); } }
+    legacy(); render();
   }
 
   // ---------- list pages (new spots, news): filter cards by town
@@ -161,6 +179,7 @@
     const items = $$('[data-city]', filt); window.countWord = 'posted';
     window.countFor = (k, v) => items.filter((x) => v === 'all' || x.dataset.city === v).length;
     document.addEventListener('pick', (e) => { let n = 0; items.forEach((x) => { const ok = e.detail.value === 'all' || x.dataset.city === e.detail.value; x.hidden = !ok; n += ok; }); $('.empty', filt).hidden = !!n; });
+    legacy();
   }
 
   // ---------- hero carousel: featured stories rotate and keep rotating under the pointer; pause button, pause while keyboard focus is inside, swipe on phones, no autoplay under reduced motion
@@ -358,7 +377,8 @@
     const months = J('months') || [], secs = $$('.cmonth', cal), lab = $('.cml', cal), [cp, cn] = $$('[data-cm]', cal);
     let ci = Math.max(0, secs.findIndex((s) => !s.hidden));
     const showM = (i) => { ci = Math.min(secs.length - 1, Math.max(0, i)); secs.forEach((s, k) => (s.hidden = k !== ci)); lab.textContent = (months[ci] || [])[1] || ''; cp.disabled = ci === 0; cn.disabled = ci === secs.length - 1; };
-    cp.addEventListener('click', () => showM(ci - 1)); cn.addEventListener('click', () => showM(ci + 1)); showM(ci);
+    cp.addEventListener('click', () => showM(ci - 1)); cn.addEventListener('click', () => showM(ci + 1));
+    const qm = new URLSearchParams(location.search).get('month'), mi = secs.findIndex((s) => s.dataset.m === qm); showM(mi >= 0 ? mi : ci);
   }
 
   // ---------- search: loads the index once (/search-index.json) and matches every word, as you type

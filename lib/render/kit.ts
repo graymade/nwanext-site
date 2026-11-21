@@ -4,7 +4,7 @@ import MARKS from '../brand/marks.json';
 import media from '../media.json';
 import { getArticle, getCities, shortCredit, type Article, type City } from '../content';
 import { items, type Item } from '../data';
-import { TODAY } from '../now';
+import { TODAY, addDays } from '../now';
 import { googleCalendarUrl } from '../when';
 
 type Mark = { vb: number[]; nwa: string; next: string; all?: string; stone?: string; letters?: string };
@@ -92,7 +92,7 @@ export type V = {
   kind: 'event' | 'opening' | 'news'; upcoming: boolean; featured: boolean; free: boolean;
   date: string; // YYYY-MM-DD: the event day, or the day it was posted
   posted: string; postedIso: string; day: string; dayLong: string; mon: string; dnum: number;
-  startRaw: string; endRaw: string; time: string; startT: string; multi: boolean; endDate: string;
+  startRaw: string; endRaw: string; icsS: string; icsE: string; time: string; startT: string; multi: boolean; endDate: string;
   venue: string; at: string; address: string; full: string; price: string; tickets: string; ages: string; hours: string;
   cat: string; image?: string; alt: string; credit: string; ics: string; gcal: string; maps: string;
   a: Article;
@@ -115,6 +115,8 @@ export function view(i: Item): V {
   const raw = (k: string, hm?: string) => k.replace(/-/g, '') + (hm ? `T${hm.replace(':', '')}00` : '');
   const startRaw = f.start ? raw(f.start, f.startTime) : '';
   const endRaw = f.start ? (f.end ? raw(f.end) : f.endTime ? raw(f.start, f.endTime) : '') : '';
+  const timed = !!f.startTime && !f.end, endT = f.endTime || (f.startTime ? `${String(Math.min(23, +f.startTime.slice(0, 2) + 2)).padStart(2, '0')}:${f.startTime.slice(3)}` : '');
+  const icsS = f.start ? (timed ? raw(f.start, f.startTime) : raw(f.start)) : '', icsE = f.start ? (timed ? raw(f.start, endT) : raw(addDays(f.end || f.start, 1))) : '';
   const venue = f.place && f.place.name !== i.city ? f.place.name : '';
   const where = [venue, f.place?.city || i.city].filter(Boolean).join(', ');
   const full = f.address ? [venue, f.address, `${f.place?.city || i.city}, AR`].filter(Boolean).join(', ') : where ? `${where}, AR` : `${i.city}, AR`;
@@ -127,7 +129,7 @@ export function view(i: Item): V {
     kind, upcoming: f.upcoming, featured: a.featured, free: a.free, date,
     posted: new Date(a.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: TZ }), postedIso: a.date,
     day: fmt(date, { weekday: 'short' }), dayLong: fmt(date, { weekday: 'long' }), mon: fmt(date, { month: 'short' }), dnum: +fmt(date, { day: 'numeric' }),
-    startRaw, endRaw, time, startT: s ? `${s.t} ${s.ap}` : 'All day', multi: !!f.end, endDate: f.end || '',
+    startRaw, endRaw, icsS, icsE, time, startT: s ? `${s.t} ${s.ap}` : 'All day', multi: !!f.end, endDate: f.end || '',
     venue, at: where || i.city, address: f.address || '', full, price, tickets: url ? (url.startsWith('http') ? url : `https://${url}`) : '',
     ages: (a.text.match(/\b(?:Ages \d+\+|All ages|21\+|18\+)/i) || [])[0] || '', hours: line(a.text, '🕖'),
     cat, image: a.showImage ? a.image : undefined, alt: a.imageAlt || '', credit: a.showImage ? shortCredit(a.credits) || '' : '',
