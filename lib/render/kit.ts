@@ -94,7 +94,7 @@ export type V = {
   posted: string; postedIso: string; day: string; dayLong: string; mon: string; dnum: number;
   startRaw: string; endRaw: string; icsS: string; icsE: string; time: string; startT: string; multi: boolean; endDate: string;
   venue: string; at: string; address: string; full: string; price: string; tickets: string; ages: string; hours: string;
-  cat: string; image?: string; alt: string; credit: string; ics: string; gcal: string; maps: string;
+  cat: string; image?: string; alt: string; credit: string; sources: { name: string; url?: string }[]; ics: string; gcal: string; maps: string;
   a: Article;
 };
 const TZ = 'America/Chicago';
@@ -123,6 +123,9 @@ export function view(i: Item): V {
   const tix = line(a.text, '🎟');
   const url = (tix.match(/((?:https?:\/\/)?[\w.-]+\.(?:com|org|net|edu|us|co|events|art)\S*)/) || [])[1]?.replace(/[.,]$/, '');
   const price = f.price === 'Free' || a.free ? 'Free' : tix && /\$/.test(tix) && kind === 'event' ? tix.replace(/\.$/, '') : f.price || '';
+  // Some captions name the source in the text ("Source and media: Dodo Coffee Company."). Use it when the CMS fields are empty.
+  const said = (a.text.match(/^Source and (?:media|image|photo)s?:\s*(.+?)\.?\s*$/im) || [])[1];
+  const sources = a.sources.filter((x) => x.name).length ? a.sources.filter((x) => x.name) : said ? [{ name: said }] : [];
   const cat = [a.free && 'free', i.category === 'Arts & Music' && 'music', i.category === 'Outdoors' && 'outside'].filter(Boolean).join(' ');
   return {
     slug: i.slug, href: i.href, title: a.title, name: short(cleanTitle(a.title), 34), city: i.city, topic: i.category, summary: a.summary,
@@ -132,7 +135,7 @@ export function view(i: Item): V {
     startRaw, endRaw, icsS, icsE, time, startT: s ? `${s.t} ${s.ap}` : 'All day', multi: !!f.end, endDate: f.end || '',
     venue, at: where || i.city, address: f.address || '', full, price, tickets: url ? (url.startsWith('http') ? url : `https://${url}`) : '',
     ages: (a.text.match(/\b(?:Ages \d+\+|All ages|21\+|18\+)/i) || [])[0] || '', hours: line(a.text, '🕖'),
-    cat, image: a.showImage ? a.image : undefined, alt: a.imageAlt || '', credit: a.showImage ? shortCredit(a.credits) || '' : '',
+    cat, image: a.showImage ? a.image : undefined, alt: a.imageAlt || '', credit: a.showImage ? shortCredit(a.credits) || said || '' : '', sources,
     ics: `/news/${i.slug}/event.ics`, gcal: googleCalendarUrl(a.title, f, `${a.summary}\n\nhttps://nwanext.com${i.href}`, full),
     maps: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(full)}`, a,
   };

@@ -759,6 +759,7 @@ html.js .rv.in{opacity:1;translate:0 0}
 
 /* ---------- reduced motion: movement goes, fades stay */
 @media (prefers-reduced-motion:reduce){
+ .gcard:hover{translate:none}.gcard:hover .tar{translate:none;rotate:none}
  html.js .rv,.slide .copy>*,.sheet,.calm,.pm,.dlg{translate:none;scale:none}
  @starting-style{.sheet[open],.calm:popover-open,.pm:popover-open,.dlg[open]{translate:none;scale:none}}
  .sph img,.slide.on .sph img{scale:1}

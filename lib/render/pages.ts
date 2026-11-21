@@ -86,12 +86,12 @@ export function story(v: V) {
   const body = paras.filter((p) => {
     if (/^[📍🎟🕖🗓]/u.test(p)) return false; // facts block, shown in the side panel
     const u = p.match(URLRE); if (u) { links.push(u[1].startsWith('http') ? u[1] : 'https://' + u[1]); return false; }
-    if (/^(Send this|Tag |Save this|Follow |#|Sources?:|Photos?:|Images?:)/.test(p)) return false; // social-only lines, and credits shown elsewhere
+    if (/^(Send this|Tag |Save this|Follow |#|Sources?:|Source and |Photos?:|Images?:)/.test(p)) return false; // social-only lines, and credits shown elsewhere
     if (repeats(p, a.title) && words(p).size <= words(a.title).size + 4) return false; // a short line that restates the headline
     return true;
   });
   const dekCovered = !v.summary || body.some((p) => repeats(v.summary, p));
-  const src = (a.sources || []).filter((s) => s.name);
+  const src = v.sources;
   const kind = v.kind === 'event' ? 'Event' : v.kind === 'opening' ? 'New spot' : 'News';
   const pool = v.kind === 'event' ? (upcoming().length ? upcoming() : pastEvents()) : v.kind === 'opening' ? openings() : news();
   const sameTown = pool.filter((x) => x.slug !== v.slug && x.city === v.city), rest = pool.filter((x) => x.slug !== v.slug && x.city !== v.city);
@@ -126,9 +126,9 @@ export function about() {
 }
 
 export function credits() {
-  const A = all().filter((v) => v.credit || v.a.sources.length);
+  const A = all().filter((v) => v.credit || v.sources.length);
   return shell({ body: `${pghead('Credits', `${esc(SOURCING)} Photos belong to the people and organizations named here. If one of them is yours and you’d like it credited differently or taken down, email <a href="mailto:${EMAIL}">${EMAIL}</a>.`)}
-<section class="wrap rv credl"><h2>Stories</h2><ul>${A.map((v) => { const src = v.a.sources.filter((s) => s.name); return `<li><a href="${v.href}">${esc(v.name)}</a><span>${v.credit ? `Photo: ${esc(v.credit)}` : ''}${v.credit && src.length ? '<br>' : ''}${src.length ? `Sources: ${src.map((s) => (s.url ? `<a href="${esc(s.url)}" ${ext}>${esc(s.name)}</a>` : esc(s.name))).join(', ')}` : ''}</span></li>`; }).join('')}</ul>
+<section class="wrap rv credl"><h2>Stories</h2><ul>${A.map((v) => { const src = v.sources; return `<li><a href="${v.href}">${esc(v.name)}</a><span>${v.credit ? `Photo: ${esc(v.credit)}` : ''}${v.credit && src.length ? '<br>' : ''}${src.length ? `Sources: ${src.map((s) => (s.url ? `<a href="${esc(s.url)}" ${ext}>${esc(s.name)}</a>` : esc(s.name))).join(', ')}` : ''}</span></li>`; }).join('')}</ul>
 <h2>Town photos</h2><p class="small">From Wikimedia Commons, under the licenses named.</p><ul>${getPhotos().map((p) => `<li><a href="${esc(p.source)}" ${ext}>${esc(p.caption)}</a><span>${esc(p.author)}, <a href="${esc(p.license_url || p.source)}" ${ext}>${esc(p.license)}</a></span></li>`).join('')}</ul>
 <h2>Map</h2><ul><li><span>State lines</span><span>U.S. Census Bureau, via the us-atlas project (public domain). Beaver Lake is drawn by hand.</span></li></ul></section>`, tipsBand: false });
 }
@@ -242,7 +242,8 @@ export function submit() {
 // ---------------------------------------------------------------- the Instagram links page (no site chrome)
 export function links() {
   const s = getSite(), n = upcoming().length;
-  const L: [string, string, string][] = [['/events/', n ? `This week in NWA · ${n} coming up` : 'What’s on in NWA', 'clay'], ['/openings/', 'New spots', 'ink'], ['/newsletter/', 'Get the newsletter', 'moss'], ['/submit/', 'Send us a tip', 'line'], ['/', 'nwanext.com', 'line']];
+  const ev: [string, string, string] = ['/events/', n ? `This week in NWA · ${n} coming up` : 'What’s on in NWA', n ? 'clay' : 'ink'], sp: [string, string, string] = ['/openings/', 'New spots', n ? 'ink' : 'clay'];
+  const L: [string, string, string][] = [...(n ? [ev, sp] : [sp, ev]), ['/newsletter/', 'Get the newsletter', 'moss'], ['/submit/', 'Send us a tip', 'line'], ['/', 'nwanext.com', 'line']];
   return `<main id="main" class="lnk"><header>${badge('live')}<h1 class="vh">NWA Next</h1><p>${esc(TAG[0])}<br><b>${esc(TAG[1])}</b></p></header>
 <nav class="lbtns" aria-label="NWA Next links">${L.map(([h, t, c]) => B(t, { cls: `${c} big`, href: h })).join('')}</nav>
 <section class="llatest"><h2>Latest</h2><ul>${latest().slice(0, 3).map((v) => `<li><a href="${v.href}">${img(v.image, '72px', 240, false, v.alt)}<span><b>${esc(short(v.title, 70))}</b><span>${esc(v.city)} · ${v.posted}</span></span></a></li>`).join('')}</ul></section>
