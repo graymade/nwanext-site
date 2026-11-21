@@ -288,9 +288,9 @@
     const small = () => tsvg.clientWidth < 560;
     const visible = () => { const s = k(), w = tsvg.clientWidth / s, h = tsvg.clientHeight / s; return [vb[0] - (w - vb[2]) / 2, vb[1] - (h - vb[3]) / 2, w, h]; };
     const sizeStates = () => { const s = k(); stl.forEach((t) => {
-      const [lo, la] = t.dataset.at.split(',').map(Number), [x, y] = wp(lo, la), px = t.classList.contains('lk') ? 14 : 13;
+      const [lo, la] = t.dataset.at.split(',').map(Number), [x, y] = wp(lo, la), cl = t.classList, px = cl.contains('cl') ? 16 : cl.contains('lk') || cl.contains('rd') ? 14 : 13;
       t.setAttribute('font-size', (px / s).toFixed(2)); t.setAttribute('x', x); t.setAttribute('y', y);
-      t.setAttribute('text-anchor', t.classList.contains('lk') ? 'start' : 'middle');
+      t.setAttribute('text-anchor', t.dataset.anchor || 'middle');
       if (t.dataset.rot) t.setAttribute('transform', `rotate(${t.dataset.rot} ${x} ${y})`); });
       tsvg.style.setProperty('--b', (2.5 / s).toFixed(2) + 'px'); };
     const layout = () => {

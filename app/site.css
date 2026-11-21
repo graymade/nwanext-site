@@ -316,23 +316,32 @@ h1.askh{font-size:clamp(2.4rem,6.2vw,6rem)}
 .tcn{display:flex;flex-wrap:wrap;gap:.4rem;margin-block:.3rem .4rem}
 .tcn li{padding:.35rem .75rem;border-radius:999px;box-shadow:inset 0 0 0 1px rgb(242 237 227/.22);font-size:.92rem;color:rgb(242 237 227/.75)}
 .tcn b{color:var(--paper);font-weight:750}
-.tmapbox{position:relative;block-size:min(calc(100svh - 7rem),54rem);min-block-size:30rem;border-radius:28px;overflow:clip;background:color-mix(in srgb,var(--ink) 7%,var(--paper))}
-.tsvg{display:block;inline-size:100%;block-size:100%}
-/* flat, solid tones: neighbours one shade darker than the paper, Arkansas in card, the lake in moss */
-.tsvg .out,.tsvg .nb{fill:color-mix(in srgb,var(--ink) 10%,var(--paper))}
-.tsvg .ar{fill:var(--card)}
-.tsvg .lake{fill:color-mix(in srgb,var(--moss) 40%,var(--card))}
-.tsvg .st{font-weight:650;fill:color-mix(in srgb,var(--ink) 50%,var(--paper));letter-spacing:.1em}
-.tsvg .st.lk{fill:var(--moss);font-style:italic;letter-spacing:0}
-.tsvg .mk path{fill:color-mix(in srgb,var(--ink) 40%,var(--card))}
+.tmapbox{position:relative;block-size:min(calc(100svh - 7rem),56rem);min-block-size:30rem}
+.tsvg{display:block;inline-size:100%;block-size:100%;overflow:clip}
+.tsvg .near path{fill:color-mix(in srgb,var(--ink) 5%,var(--paper));stroke:var(--paper);stroke-width:3;vector-effect:non-scaling-stroke}
+.tsvg .cty{stroke:var(--paper);stroke-width:4;vector-effect:non-scaling-stroke;transition:fill .3s var(--ease-out)}
+.tsvg .cty.be{fill:color-mix(in srgb,var(--clay) 17%,var(--paper))}
+.tsvg .cty.wa{fill:color-mix(in srgb,var(--moss) 17%,var(--paper))}
+.tsvg:has(.mc.hot[data-co="be"]) .cty.be{fill:color-mix(in srgb,var(--clay) 24%,var(--paper))}
+.tsvg .lake{fill:color-mix(in srgb,var(--moss) 48%,var(--paper))}
+.tsvg .stl{fill:none;stroke:var(--ink);stroke-opacity:.35;stroke-width:1.5;stroke-dasharray:2 5;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.tsvg .i49{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;opacity:.55}
+.tsvg .i49.cas{stroke:var(--paper);stroke-width:7;opacity:1}
+.tsvg text{paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}
+.tsvg .st{font-weight:650;fill:color-mix(in srgb,var(--ink) 45%,var(--paper));letter-spacing:.08em;stroke-width:0}
+.tsvg .st.cl{letter-spacing:-.005em;font-weight:780;stroke-width:4px}
+.tsvg .st.cl.be{fill:color-mix(in srgb,var(--clay) 80%,var(--ink))}.tsvg .st.cl.wa{fill:var(--moss)}
+.tsvg .st.lk{fill:var(--moss);font-style:italic;letter-spacing:0;font-weight:650;stroke-width:4px}
+.tsvg .st.rd{fill:var(--ink);font-weight:800;letter-spacing:0;stroke-width:4px;opacity:.7}
+.tsvg .mk path{fill:color-mix(in srgb,var(--ink) 55%,var(--paper));stroke:var(--paper);stroke-width:1.5;vector-effect:non-scaling-stroke}
 .tsvg .t1 .mk path{fill:var(--ink)}.tsvg .has .mk path{fill:var(--clay)}
 .tsvg .mc{opacity:0;transition:opacity .45s var(--ease-out) var(--d,0s)}
 .tsvg.in .mc,html:not(.js) .tsvg .mc{opacity:1}
-.tsvg .mc text{font-weight:650;fill:var(--muted);transition:fill .2s var(--ease-out),opacity .2s var(--ease-out);animation:bob 4.6s ease-in-out infinite alternate}
-.tsvg .t1 text{fill:var(--ink);font-weight:780}
-.tsvg .t2 text{fill:color-mix(in srgb,var(--ink) 80%,var(--paper));font-weight:700}
+.tsvg .mc text{font-weight:650;fill:color-mix(in srgb,var(--ink) 70%,var(--paper));transition:fill .2s var(--ease-out),opacity .2s var(--ease-out);animation:bob 4.6s ease-in-out infinite alternate}
+.tsvg .t1 text{fill:var(--ink);font-weight:800}
+.tsvg .t2 text{fill:var(--ink);font-weight:700}
 .tsvg .nolbl text{opacity:0}
-.tsvg .mc.hot text{fill:#fff;opacity:1}
+.tsvg .mc.hot text{fill:#fff;opacity:1;stroke-width:0}
 .tsvg .mc:focus-visible{outline:none}
 .tsvg .mfollow{fill:var(--clay);opacity:0;transition:opacity .2s var(--ease-out)}
 .tsvg .mfollow.on{opacity:1}
@@ -729,7 +738,7 @@ html.js .rv.in{opacity:1;translate:0 0}
  .slide .copy{padding-block-end:5.5rem}
  .factbar{grid-template-columns:1fr;gap:.5rem}.factbar dl{display:grid;grid-template-columns:4rem 1fr;gap:.75rem}.factbar dd{font-size:1rem}.factbar .acts{margin-block-start:.5rem}
  .tabs{gap:.5rem}.tab .tt{display:none}
- .tmapbox{block-size:min(74svh,calc(100vw * 1.15));min-block-size:0;border-radius:20px}
+ .tmapbox{block-size:min(80svh,calc(100vw * 1.2));min-block-size:0}
  .slide h2.long{font-size:clamp(1.9rem,8vw,2.5rem)}.slide .copy{padding-block-start:5.5rem}
  .askh{font-size:clamp(2rem,9vw,2.6rem)}
  .wknav{margin-block-start:1.75rem}.wkl{min-inline-size:8.25rem;margin-inline-end:.2rem}.wkl b{font-size:1.25rem}.wkl small{font-size:.85rem}

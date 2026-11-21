@@ -58,7 +58,7 @@ const tipDialog = () => `<dialog class="dlg" id="tip" aria-labelledby="tiph">${t
 export const footer = () => { const s = getSite(); return `<footer class="foot"><div class="wrap">
 <div class="ftag rv"><p class="ft1">${esc(TAG[0])}</p><p class="ft2 split">${split(TAG[1])}</p></div>
 <div class="flinks"><a href="/about/">About</a><a href="/guides/">Guides</a><a href="/calendar/">Calendar</a><a href="/connect/">Get connected</a><button type="button" data-open="tip">Send a tip</button><a href="mailto:${EMAIL}">${EMAIL}</a><a href="${esc(s.instagram)}">Instagram</a><a href="webcal://nwanext.com/calendar.ics">Calendar feed</a><a href="/feed.xml">RSS</a></div>
-<div class="big" role="img" aria-label="nwa next">${bigMark()}</div>
+<a class="big" href="/" aria-label="nwa next, home">${bigMark()}</a>
 <div class="fine"><span>© ${new Date().getFullYear()} NWA Next</span><span><a href="/privacy/">Privacy</a><a href="/credits/">Credits</a></span></div></div>
 </footer>
 ${tipDialog()}`; };
