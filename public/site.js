@@ -10,6 +10,7 @@
   const PLAY = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>';
   // Buttons carry their label twice for the slide hover; always change both copies.
   const setLabel = (b, t) => { const l = b.querySelector('.lb'); if (!l) return; l.dataset.t = t; l.firstElementChild.textContent = t; };
+  const H = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const day = (s) => new Date(s + 'T12:00:00');
 
@@ -92,15 +93,16 @@
     $$('.plans b,.pc').forEach((b) => { b.textContent = P.length; if (bump) { b.classList.add('bump'); setTimeout(() => b.classList.remove('bump'), 260); } });
     const ul = $('.plansp ul'); if (!ul) return;
     const items = P.map(byId).filter(Boolean);
-    ul.innerHTML = items.map((e) => `<li>${e.t}<span>${e.d}</span><button type="button" data-rm="${e.id}" aria-label="Remove ${e.t}">${X}</button></li>`).join('');
+    ul.innerHTML = items.map((e) => `<li>${H(e.t)}<span>${H(e.d)}</span><button type="button" data-rm="${H(e.id)}" aria-label="Remove ${H(e.t)}">${X}</button></li>`).join('');
     $('.plansp .pe').hidden = !!items.length; $('.plansp .allcal').hidden = !items.length;
   };
   document.addEventListener('click', (e) => {
     const s = e.target.closest('.save'); if (s) { e.preventDefault(); const id = s.dataset.id; P = P.includes(id) ? P.filter((x) => x !== id) : [...P, id]; syncPlans(true); }
     const rm = e.target.closest('[data-rm]'); if (rm) { P = P.filter((x) => x !== rm.dataset.rm); syncPlans(true); }
     if (e.target.closest('.allcal')) {
+      const ics = (t) => String(t || '').replace(/\r/g, '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); // RFC 5545 text
       const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//NWA Next//Plans//EN'];
-      P.map(byId).filter(Boolean).forEach((v) => { const tz = v.s.includes('T') ? ';TZID=America/Chicago' : ';VALUE=DATE'; L.push('BEGIN:VEVENT', 'UID:' + v.id + '@nwanext.com', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z', 'DTSTART' + tz + ':' + v.s, 'DTEND' + tz + ':' + v.e, 'SUMMARY:' + v.t, 'LOCATION:' + v.l.replace(/,/g, '\\,'), 'URL:' + v.u, 'END:VEVENT'); });
+      P.map(byId).filter(Boolean).forEach((v) => { const tz = v.s.includes('T') ? ';TZID=America/Chicago' : ';VALUE=DATE'; L.push('BEGIN:VEVENT', 'UID:' + v.id + '@nwanext.com', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z', 'DTSTART' + tz + ':' + v.s, 'DTEND' + tz + ':' + v.e, 'SUMMARY:' + ics(v.t), 'LOCATION:' + ics(v.l), 'URL:' + ics(v.u), 'END:VEVENT'); });
       L.push('END:VCALENDAR');
       const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([L.join('\r\n')], { type: 'text/calendar' })); a.download = 'nwa-next-plans.ics'; a.click();
     }
@@ -148,7 +150,7 @@
     jump.addEventListener('click', () => { const w = nextWith(); if (w < 0) return; const dir = w - st.week; st.week = w; st.days.clear(); render(dir); });
     document.addEventListener('pick', (e) => { st[e.detail.key] = e.detail.value; render(); });
     // events.html?from=YYYY-MM-DD&to=YYYY-MM-DD (the weekend cards link here)
-    const q = new URLSearchParams(location.search), from = q.get('from'), to = q.get('to');
+    const q = new URLSearchParams(location.search), D = /^\d{4}-\d{2}-\d{2}$/, from = D.test(q.get('from') || '') ? q.get('from') : null, to0 = q.get('to'), to = D.test(to0 || '') && to0 >= from && (day(to0) - day(from)) / 864e5 <= 14 ? to0 : null; // a weekend, never an open-ended range
     if (from) { for (let w = 0; w < weeks; w++) if (inWeek(from, w)) st.week = w; for (let d = day(from); ymd(d) <= (to || from); d.setDate(d.getDate() + 1)) st.days.add(ymd(d)); }
     render();
   }
