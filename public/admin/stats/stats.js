@@ -14,7 +14,7 @@
     if (/[\\\s\x00-\x1f]/.test(v)) return '#';
     try {
       const url = new URL(v, location.origin);
-      return url.origin === location.origin || url.origin === 'https://nwanext.com' ? esc(url.pathname + url.search) : '#';
+      return url.origin === location.origin || url.origin === 'https://nwanext.com' ? esc(location.origin + url.pathname.replace(/^\/+/, '/') + url.search) : '#';
     } catch { return '#'; }
   };
   const fmt = (n) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}k` : Math.round(n).toLocaleString('en-US'));
