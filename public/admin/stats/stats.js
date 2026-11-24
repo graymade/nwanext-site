@@ -46,7 +46,7 @@
     } catch {
       return status('<p><b>Couldn’t reach the stats service.</b> Check the connection and reload.</p>');
     }
-    if (data.error === 'sign_in') return status('<p><b>Your editor login has expired.</b></p><p><a class="btn" href="/admin/">Sign in again</a></p>');
+    if (data.error === 'sign_in') return status('<p><b>Your editor login needs a refresh.</b> Opening the editor renews it, then come back here.</p><p><a class="btn" href="/admin/">Open the editor</a></p>');
     if (data.error === 'no_access') return status('<p><b>This GitHub account can’t edit the site,</b> so it can’t see stats.</p>');
     if (data.error === 'google_auth') return status(`<p><b>Google isn’t connected yet.</b> The stats service needs read access to Analytics and Search Console.</p><p class="small">${esc(data.detail)}</p>`);
     if (!res.ok) return status(`<p><b>Something went wrong.</b></p><p class="small">${esc(data.error)}</p>`);
@@ -80,7 +80,7 @@
       $('tiles').innerHTML = tiles.map(([k, v, a, b]) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}</div>${delta(a, b)}</div>`).join('');
       const sum = ga.daily.reduce((s, r) => s + r.visitors, 0);
       $('daily-sum').textContent = ga.daily.length ? `Busiest day ${fmt(Math.max(...ga.daily.map((r) => r.visitors)))} visitors` : '';
-      lineChart($('daily'), ga.daily.map((r) => ({ x: r.date, y: r.visitors, v: r.views })), sum);
+      lineChart($('daily'), fillDays(ga.daily, d.days), sum);
 
       rows($('pages'), ga.pages.map((r) => ({ label: `<a href="${href(r.path)}" title="${esc(r.path)}">${esc(cleanTitle(r.title) || r.path)}</a>`, n: r.views, unit: 'views' })));
       rows($('channels'), ga.channels.map((r) => ({ label: esc(r.name), n: r.sessions, unit: 'visits' })));
@@ -145,6 +145,19 @@
     return `<div class="d ${ch > 0 ? 'up' : 'down'}">${ch > 0 ? 'Up' : 'Down'} ${pct(Math.abs(ch))} on the ${days} days before</div>`;
   }
 
+  // GA skips days with no visits; show them as zero so the line keeps a steady daily step.
+  function fillDays(rows, n) {
+    const by = Object.fromEntries(rows.map((r) => [r.date, r]));
+    const first = rows.length ? rows[0].date : null;
+    const out = [];
+    for (let i = n - 1; i >= 0; i--) {
+      const dt = new Date(Date.now() - i * 864e5).toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }).replace(/-/g, '');
+      if (first && dt < first && !out.length) continue; // start at the first day with data
+      const r = by[dt];
+      out.push({ x: dt, y: r ? r.visitors : 0, v: r ? r.views : 0 });
+    }
+    return out;
+  }
   const cleanTitle = (t) => String(t || '').replace(/\s*\|\s*NWA Next$/, '');
   const hourName = (h) => (h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`);
   const dayName = (s) => new Date(`${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}T12:00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
