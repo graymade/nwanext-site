@@ -14,12 +14,12 @@ export function heroSlides(list: V[]) {
 const kindLabel = (v: V) => (v.kind === 'event' ? (v.upcoming ? 'Worth going' : 'Event') : v.kind === 'opening' ? 'New spot' : 'News');
 export const hero = (slides: V[]) => `<section class="hero" aria-roledescription="carousel" aria-label="Worth knowing this week"><h1 class="vh">NWA Next: new eats, events and openings across Northwest Arkansas</h1>
 <div class="slides">${slides.map((v, i) => `<article class="slide ${i === 0 ? 'on' : ''}" aria-roledescription="slide" aria-label="${i + 1} of ${slides.length}" ${i ? 'aria-hidden="true" inert' : ''}>
-<div class="sph">${img(v.image, '100vw', 1600, i === 0, v.alt)}</div><div class="copy">${label(kindLabel(v))}<h2 class="${v.title.length > 44 ? 'long' : ''}"><a href="${v.href}">${esc(v.title)}</a></h2>
+<div class="sph">${i === 0 ? img(v.image, '100vw', 1600, true, v.alt) : img(v.image, '100vw', 1600, false, v.alt).replace('loading="lazy"', 'loading="lazy" fetchpriority="low"')}</div><div class="copy">${label(kindLabel(v))}<h2 class="${v.title.length > 44 ? 'long' : ''}"><a href="${v.href}">${esc(v.title)}</a></h2>
 <div class="factbar">${v.kind === 'event' && v.upcoming
   ? `<dl><dt>When</dt><dd>${when(v)}</dd></dl><dl><dt>Where</dt><dd>${esc(v.at)}</dd></dl>${v.price ? `<dl><dt>Cost</dt><dd>${esc(v.price.split(' ')[0])}${v.ages ? ` · ${esc(v.ages)}` : ''}</dd></dl>` : ''}
 <div class="acts">${calMenu(v, 'clay')}${save(v, 'photo')}${B('Details', { cls: 'photo', href: v.href })}</div>`
   : `<dl><dt>Where</dt><dd>${esc(v.at)}</dd></dl><dl><dt>Posted</dt><dd>${v.posted}</dd></dl><div class="acts">${B('Read the story', { cls: 'clay', href: v.href, icon: I.arrow })}</div>`}</div></div></article>`).join('')}</div>
-<div class="hctl wrap"><div class="tabs" role="tablist" aria-label="Pick a story">${slides.map((v, i) => `<button type="button" role="tab" class="tab" aria-selected="${i === 0}" data-i="${i}"><span class="bar"><i></i></span><span class="tt">${v.kind === 'event' && v.upcoming ? `${v.day} · ` : ''}${esc(v.name)}</span></button>`).join('')}</div>
+<div class="hctl wrap"><div class="tabs" role="tablist" aria-label="Pick a story">${slides.map((v, i) => `<button type="button" role="tab" class="tab" aria-selected="${i === 0}" data-i="${i}" aria-label="${esc(v.name)}"><span class="bar"><i></i></span><span class="tt">${v.kind === 'event' && v.upcoming ? `${v.day} · ` : ''}${esc(v.name)}</span></button>`).join('')}</div>
 <button type="button" class="arw pause" aria-label="Pause the slideshow" aria-pressed="false">${I.pause}</button></div></section>`;
 
 // ---------------------------------------------------------------- the agenda

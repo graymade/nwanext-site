@@ -85,6 +85,7 @@ collections:
 
   - name: settings
     label: Site settings
+    description: "Visitors, signups and Google search numbers are on the stats page: nwanext.com/admin/stats/"
     files:
       - name: site
         label: Site, newsletter and tips

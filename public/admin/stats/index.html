@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>NWA Next stats</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/stats/stats.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="mark" href="/" aria-label="nwanext.com home"><span>nwa</span><b>next</b></a>
+      <span class="title">Stats</span>
+      <div class="range" role="group" aria-label="Date range">
+        <button type="button" data-days="7">7 days</button>
+        <button type="button" data-days="28" aria-pressed="true">28 days</button>
+        <button type="button" data-days="90">90 days</button>
+      </div>
+      <a class="edit" href="/admin/">Open the editor</a>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <p class="note" id="status" role="status">Loading…</p>
+    <div id="out" hidden>
+      <section class="live" id="live"></section>
+
+      <section aria-labelledby="h-site">
+        <h2 id="h-site">On the site</h2>
+        <div class="tiles" id="tiles"></div>
+        <figure class="card chart">
+          <figcaption><b>Visitors per day</b><span id="daily-sum"></span></figcaption>
+          <div class="plot" id="daily"></div>
+        </figure>
+      </section>
+
+      <section class="grid2">
+        <div class="card"><h3>Most read</h3><ol class="rows" id="pages"></ol></div>
+        <div class="card"><h3>How people find it</h3><ul class="rows" id="channels"></ul>
+          <h4>Top sources</h4><ul class="rows" id="sources"></ul></div>
+      </section>
+
+      <section class="grid3">
+        <div class="card"><h3>Where visitors are</h3><ul class="rows" id="cities"></ul></div>
+        <div class="card"><h3>Devices</h3><ul class="rows" id="devices"></ul>
+          <h4>When people visit</h4><div class="hours" id="hours"></div><p class="small">Visitors by hour of day, Central time.</p></div>
+        <div class="card"><h3>AI answer engines</h3><p class="small">Visits sent by ChatGPT, Perplexity, Gemini, Copilot, Claude and others. This is the AEO number to grow.</p><ul class="rows" id="ai"></ul></div>
+      </section>
+
+      <section aria-labelledby="h-search">
+        <h2 id="h-search">On Google search</h2>
+        <div id="gsc"></div>
+      </section>
+
+      <p class="small foot" id="foot"></p>
+    </div>
+  </main>
+  <div class="tip" id="tip" role="tooltip" hidden></div>
+  <script src="/admin/stats/stats.js" defer></script>
+</body>
+</html>

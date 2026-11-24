@@ -7,7 +7,7 @@ import { getSite } from '@/lib/content';
 import { orgLd } from '@/lib/seo';
 
 // Bricolage Grotesque, self-hosted by next/font at build time (no request to Google from the visitor).
-const brico = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz', 'wdth'], display: 'swap', variable: '--font-b' });
+const brico = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz'], display: 'swap', variable: '--font-b' });
 const site = getSite();
 // Google Analytics (GA4) loads only when a measurement ID (G-...) is set in the CMS (Site settings, Analytics).
 const GA = /^G-[A-Z0-9]+$/.test(site.analytics?.googleId?.trim() || '') ? site.analytics!.googleId!.trim() : '';

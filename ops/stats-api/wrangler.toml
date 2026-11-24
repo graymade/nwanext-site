@@ -1,0 +1,14 @@
+# Stats API for nwanext.com/admin/stats/ (GA4 + Search Console, editors only).
+# Deploy from this folder: npx wrangler deploy
+# Google access is set once with: node get-google-token.mjs <path to the OAuth client JSON>
+# (writes GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN as Worker secrets; nothing is printed or saved).
+name = "nwanext-stats"
+main = "src/index.js"
+compatibility_date = "2026-10-19"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://nwanext.com, http://localhost:3031"
+GITHUB_REPO = "graymade/nwanext-site"
+GA_PROPERTY_ID = "" # the numeric property ID (GA Admin, Property details), not the G- tag ID
+GSC_SITE = "https://nwanext.com/" # URL-prefix property; use "sc-domain:nwanext.com" for a domain property
