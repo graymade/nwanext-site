@@ -3,12 +3,20 @@
 (() => {
   const qs = new URLSearchParams(location.search);
   const local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  const API = qs.get('api') || (local ? 'http://localhost:8799' : 'https://nwanext-stats.graymade.workers.dev');
+  // The API override is for local testing only: on the live site the token must only ever go to our Worker.
+  const API = local ? qs.get('api') || 'http://localhost:8799' : 'https://nwanext-stats.graymade.workers.dev';
   const DEMO = qs.has('demo');
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   // Only link to pages on this site; Analytics paths can be spammed.
-  const href = (u) => { const v = String(u || ''); return /^\/(?!\/)/.test(v) || /^https:\/\/(www\.)?nwanext\.com\//.test(v) ? esc(v) : '#'; };
+  const href = (u) => {
+    const v = String(u || '');
+    if (/[\\\s\x00-\x1f]/.test(v)) return '#';
+    try {
+      const url = new URL(v, location.origin);
+      return url.origin === location.origin || url.origin === 'https://nwanext.com' ? esc(url.pathname + url.search) : '#';
+    } catch { return '#'; }
+  };
   const fmt = (n) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}k` : Math.round(n).toLocaleString('en-US'));
   const pct = (n) => `${(n * 100).toFixed(n < 0.1 ? 1 : 0)}%`;
   const mins = (s) => (s >= 60 ? `${Math.floor(s / 60)}m ${Math.round(s % 60)}s` : `${Math.round(s)}s`);
@@ -86,7 +94,7 @@
     }
 
     renderGsc(d.gsc || {}, ga.organicLanding || []);
-    $('foot').innerHTML = `Analytics covers the last ${d.days} days including today. Search data runs about two days behind Google. Updated ${new Date(d.generated).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}${demo ? '' : ' (cached up to 30 minutes, <button type="button" class="btn" id="fresh">refresh now</button>)'}.`;
+    $('foot').innerHTML = `Analytics covers the last ${Number(d.days) | 0} days including today. Search data runs about two days behind Google. Updated ${new Date(d.generated).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}${d.cached ? ' (a saved copy up to 30 minutes old, <button type="button" class="btn" id="fresh">refresh now</button>)' : ''}.`;
     $('fresh')?.addEventListener('click', () => load(true));
   }
 

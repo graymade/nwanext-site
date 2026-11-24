@@ -27,7 +27,9 @@ export default {
     const cacheKey = new Request(`https://stats.cache/v2?days=${days}`);
     const cache = caches.default;
 
+    // Note: the Cache API only stores on a custom domain; on workers.dev every load reads Google directly (well inside quota).
     let report = fresh ? null : await cache.match(cacheKey).then((r) => (r ? r.json() : null));
+    const cached = !!report;
     let token;
     try {
       token = await googleToken(env);
@@ -43,7 +45,7 @@ export default {
       if (!ga.error) ctx.waitUntil(cache.put(cacheKey, new Response(JSON.stringify(report), { headers: { 'cache-control': 'max-age=1800' } })));
     }
     const realtime = await gaRealtime(env, token).catch((e) => ({ error: String(e.message || e) }));
-    return json({ ...report, realtime, user: who.login });
+    return json({ ...report, cached, realtime, user: who.login });
   },
 };
 
@@ -172,8 +174,9 @@ async function gaReport(env, token, days) {
   const [cities, devices, events, hours, organic] = b.reports;
 
   // With two date ranges GA adds a dateRange dimension: date_range_0 is the current period.
-  const totals = { cur: {}, prev: {} };
   const names = ['visitors', 'newVisitors', 'sessions', 'views', 'engagedSeconds', 'engagementRate'];
+  const zero = () => Object.fromEntries(names.map((n) => [n, 0]));
+  const totals = { cur: zero(), prev: zero() };
   for (const row of rowsOf(tot)) {
     const which = row.d[0] === 'date_range_1' ? 'prev' : 'cur';
     names.forEach((n, i) => (totals[which][n] = row.m[i]));
