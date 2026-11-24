@@ -24,7 +24,7 @@ export default {
 
     const days = RANGES.includes(Number(url.searchParams.get('days'))) ? Number(url.searchParams.get('days')) : 28;
     const fresh = url.searchParams.get('fresh') === '1';
-    const cacheKey = new Request(`https://stats.cache/v2?days=${days}`);
+    const cacheKey = new Request(`https://stats.cache/v4?days=${days}`);
     const cache = caches.default;
 
     // Note: the Cache API only stores on a custom domain; on workers.dev every load reads Google directly (well inside quota).
@@ -149,7 +149,8 @@ async function gaReport(env, token, days) {
   });
   const desc = (metric) => ({ orderBys: [{ metric: { metricName: metric }, desc: true }] });
 
-  const [a, b] = await Promise.all([
+  const both = (dims, metrics, extra = {}) => ({ ...r(dims, metrics, extra), dateRanges: [cur, prev] });
+  const [a, b, c] = await Promise.all([
     gPost(base, token, {
       requests: [
         { dateRanges: [cur, prev], metrics: ['activeUsers', 'newUsers', 'sessions', 'screenPageViews', 'userEngagementDuration', 'engagementRate'].map((name) => ({ name })) },
@@ -165,13 +166,26 @@ async function gaReport(env, token, days) {
         r(['deviceCategory'], ['activeUsers'], desc('activeUsers')),
         { dateRanges: [cur, prev], dimensions: [{ name: 'eventName' }], metrics: [{ name: 'eventCount' }], dimensionFilter: { filter: { fieldName: 'eventName', inListFilter: { values: ['sign_up', 'tip_sent'] } } } },
         r(['hour'], ['activeUsers'], { orderBys: [{ dimension: { dimensionName: 'hour' } }] }),
-        r(['landingPagePlusQueryString'], ['sessions'], { ...desc('sessions'), limit: 10, dimensionFilter: { filter: { fieldName: 'sessionDefaultChannelGroup', stringFilter: { matchType: 'EXACT', value: 'Organic Search' } } } }),
+        r(['landingPage'], ['sessions'], { ...desc('sessions'), limit: 10, dimensionFilter: { filter: { fieldName: 'sessionDefaultChannelGroup', stringFilter: { matchType: 'EXACT', value: 'Organic Search' } } } }),
+      ],
+    }),
+    gPost(base, token, {
+      requests: [
+        r(['dayOfWeek'], ['activeUsers'], { orderBys: [{ dimension: { dimensionName: 'dayOfWeek' } }] }),
+        both(['nthDay'], ['activeUsers'], { orderBys: [{ dimension: { dimensionName: 'nthDay' } }] }),
+        r(['landingPage'], ['sessions'], { ...desc('sessions'), limit: 10, dimensionFilter: { orGroup: { expressions: [{ filter: { fieldName: 'sessionSource', stringFilter: { matchType: 'CONTAINS', value: 'instagram', caseSensitive: false } } }, { filter: { fieldName: 'sessionSource', stringFilter: { matchType: 'EXACT', value: 'ig' } } }] } } }),
+        r(['pagePath'], ['screenPageViews', 'activeUsers', 'userEngagementDuration'], { ...desc('screenPageViews'), limit: 25, dimensionFilter: { filter: { fieldName: 'pagePath', stringFilter: { matchType: 'BEGINS_WITH', value: '/news/' } } } }),
+        both(['newVsReturning'], ['activeUsers']),
       ],
     }),
   ]);
 
   const [tot, daily, pages, channels, sources] = a.reports;
   const [cities, devices, events, hours, organic] = b.reports;
+  const [weekdays, nth, igLanding, stories, nvr] = c.reports;
+  const prevDaily = rowsOf(nth).filter((x) => x.d[1] === 'date_range_1').map((x) => ({ n: Number(x.d[0]), visitors: x.m[0] }));
+  const returning = { cur: 0, prev: 0 };
+  for (const x of rowsOf(nvr)) if (x.d[0] === 'returning') returning[x.d[1] === 'date_range_1' ? 'prev' : 'cur'] = x.m[0];
 
   // With two date ranges GA adds a dateRange dimension: date_range_0 is the current period.
   const names = ['visitors', 'newVisitors', 'sessions', 'views', 'engagedSeconds', 'engagementRate'];
@@ -193,11 +207,16 @@ async function gaReport(env, token, days) {
     channels: rowsOf(channels).map((x) => ({ name: x.d[0], sessions: x.m[0] })),
     sources: srcRows.slice(0, 12),
     ai: srcRows.filter((x) => AI_SOURCES.test(x.source)),
-    instagram: srcRows.filter((x) => /instagram|^ig$|l\.instagram/i.test(x.source)).reduce((s, x) => s + x.sessions, 0),
+    instagram: srcRows.filter((x) => /instagram|^ig$/i.test(x.source)).reduce((s, x) => s + x.sessions, 0),
     cities: rowsOf(cities).map((x) => ({ city: x.d[0], region: x.d[1], visitors: x.m[0] })),
     devices: rowsOf(devices).map((x) => ({ name: x.d[0], visitors: x.m[0] })),
     hours: rowsOf(hours).map((x) => ({ hour: Number(x.d[0]), visitors: x.m[0] })),
     organicLanding: rowsOf(organic).map((x) => ({ path: x.d[0], sessions: x.m[0] })),
+    weekdays: rowsOf(weekdays).map((x) => ({ day: Number(x.d[0]), visitors: x.m[0] })),
+    prevDaily,
+    returning,
+    instagramLanding: rowsOf(igLanding).map((x) => ({ path: x.d[0], sessions: x.m[0] })),
+    stories: rowsOf(stories).map((x) => ({ path: x.d[0], views: x.m[0], visitors: x.m[1], engagedSeconds: x.m[2] })),
   };
 }
 
@@ -222,7 +241,9 @@ async function gscReport(env, token, days) {
   const start = new Date(end.getTime() - (days - 1) * 864e5);
   const iso = (d) => d.toISOString().slice(0, 10);
   const q = (dims, rowLimit) => gPost(url, token, { startDate: iso(start), endDate: iso(end), dimensions: dims, rowLimit, dataState: 'all' });
-  const [tot, queries, pages, daily] = await Promise.all([q([], 1), q(['query'], 250), q(['page'], 25), q(['date'], days)]);
+  const sitemapsP = fetch(`https://searchconsole.googleapis.com/webmasters/v3/sites/${site}/sitemaps`, { headers: { authorization: `Bearer ${token}` } })
+    .then((x) => x.json()).catch(() => ({}));
+  const [tot, queries, pages, daily, sm] = await Promise.all([q([], 1), q(['query'], 250), q(['page'], 50), q(['date'], days), sitemapsP]);
   const pick = (r) => ({ clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position });
   const qs = (queries.rows || []).map((r) => ({ query: r.keys[0], ...pick(r) }));
   return {
@@ -233,6 +254,12 @@ async function gscReport(env, token, days) {
     // Seen in search but sitting just off page one: the easiest wins.
     nearlyThere: qs.filter((r) => r.position >= 4 && r.position <= 20 && r.impressions >= 5).sort((x, y) => y.impressions - x.impressions).slice(0, 12),
     pages: (pages.rows || []).map((r) => ({ page: r.keys[0], ...pick(r) })),
+    // Shown in Google often but rarely clicked: the headline or summary isn't earning the click.
+    lowClick: (pages.rows || []).filter((r) => r.impressions >= 30 && r.ctr < 0.015).map((r) => ({ page: r.keys[0], ...pick(r) })).slice(0, 8),
+    sitemaps: (sm.sitemap || []).map((x) => ({
+      path: x.path, lastSubmitted: x.lastSubmitted, lastDownloaded: x.lastDownloaded, pending: x.isPending, errors: Number(x.errors || 0), warnings: Number(x.warnings || 0),
+      submitted: (x.contents || []).reduce((n, c) => n + Number(c.submitted || 0), 0),
+    })),
     daily: (daily.rows || []).map((r) => ({ date: r.keys[0], clicks: r.clicks, impressions: r.impressions })),
   };
 }

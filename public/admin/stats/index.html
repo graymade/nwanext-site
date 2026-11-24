@@ -26,35 +26,60 @@
   </header>
 
   <main class="wrap" id="main">
-    <p class="note" id="status" role="status">Loading…</p>
+    <div class="note" id="status" role="status">Loading…</div>
     <div id="out" hidden>
-      <section class="live" id="live"></section>
-
-      <section aria-labelledby="h-site">
-        <h2 id="h-site">On the site</h2>
-        <div class="tiles" id="tiles"></div>
-        <figure class="card chart">
-          <figcaption><b>Visitors per day</b><span id="daily-sum"></span></figcaption>
-          <div class="plot" id="daily"></div>
-        </figure>
+      <section class="card summary" aria-labelledby="h-sum">
+        <h2 id="h-sum">The short version</h2>
+        <p id="live" class="live"></p>
+        <p id="summary"></p>
       </section>
 
-      <section class="grid2">
-        <div class="card"><h3>Most read</h3><ol class="rows" id="pages"></ol></div>
-        <div class="card"><h3>How people find it</h3><ul class="rows" id="channels"></ul>
-          <h4>Top sources</h4><ul class="rows" id="sources"></ul></div>
+      <div class="tiles" id="tiles"></div>
+
+      <figure class="card chart">
+        <figcaption><b>Visitors per day</b><span class="legend" id="legend"></span></figcaption>
+        <div class="plot" id="daily"></div>
+      </figure>
+
+      <section aria-labelledby="h-todo">
+        <h2 id="h-todo">What to do next</h2>
+        <ol class="todo" id="todo"></ol>
       </section>
 
-      <section class="grid3">
-        <div class="card"><h3>Where visitors are</h3><ul class="rows" id="cities"></ul></div>
-        <div class="card"><h3>Devices</h3><ul class="rows" id="devices"></ul>
-          <h4>When people visit</h4><div class="hours" id="hours"></div><p class="small">Visitors by hour of day, Central time.</p></div>
-        <div class="card"><h3>AI answer engines</h3><p class="small">Visits sent by ChatGPT, Perplexity, Gemini, Copilot, Claude and others. This is the AEO number to grow.</p><ul class="rows" id="ai"></ul></div>
+      <section aria-labelledby="h-stories">
+        <h2 id="h-stories">Stories</h2>
+        <div class="grid2">
+          <div class="card"><h3>Top stories</h3><div id="stories"></div></div>
+          <div class="card"><h3>Other pages</h3><p class="small">Home, events, towns and the Instagram links page.</p><ul class="rows" id="pages"></ul></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-from">
+        <h2 id="h-from">Where readers come from</h2>
+        <div class="grid3">
+          <div class="card"><h3>How they find the site</h3><ul class="rows" id="channels"></ul><h4>Top sources</h4><ul class="rows" id="sources"></ul></div>
+          <div class="card"><h3>What Instagram visitors open</h3><p class="small">The first page people land on after tapping a link on Instagram.</p><ul class="rows" id="instagram"></ul></div>
+          <div class="card"><h3>AI answer engines</h3><p class="small">Visits sent by ChatGPT, Perplexity, Gemini, Copilot, Claude and others. This is the AEO number to grow.</p><ul class="rows" id="ai"></ul></div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-who">
+        <h2 id="h-who">Who and when</h2>
+        <div class="grid3">
+          <div class="card"><h3>Readers by town</h3><p class="small">Visitors from each town next to how many stories the site has about it.</p><div id="towns"></div></div>
+          <div class="card"><h3>When people visit</h3><p class="small" id="besttime"></p><h4>By day</h4><div class="bars week" id="weekdays"></div><h4>By hour, Central time</h4><div class="bars hours" id="hours"></div></div>
+          <div class="card"><h3>Devices</h3><ul class="rows" id="devices"></ul></div>
+        </div>
       </section>
 
       <section aria-labelledby="h-search">
         <h2 id="h-search">On Google search</h2>
         <div id="gsc"></div>
+      </section>
+
+      <section aria-labelledby="h-health">
+        <h2 id="h-health">Site health</h2>
+        <div class="card"><dl class="health" id="health"></dl></div>
       </section>
 
       <p class="small foot" id="foot"></p>
