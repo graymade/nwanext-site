@@ -10,5 +10,5 @@ workers_dev = true
 [vars]
 ALLOWED_ORIGINS = "https://nwanext.com, http://localhost:3031"
 GITHUB_REPO = "graymade/nwanext-site"
-GA_PROPERTY_ID = "" # the numeric property ID (GA Admin, Property details), not the G- tag ID
+GA_PROPERTY_ID = "564376360" # GA4 property "NWA Next (nwanext.com)", Graymade account
 GSC_SITE = "https://nwanext.com/" # URL-prefix property; use "sc-domain:nwanext.com" for a domain property

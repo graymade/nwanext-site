@@ -3,7 +3,7 @@
 // Usage (from ops/stats-api): node get-google-token.mjs ~/Downloads/client_secret_XXXX.json
 // The JSON is the "Desktop app" OAuth client downloaded from Google Cloud (APIs & Services, Credentials).
 import http from 'node:http';
-import { readFileSync } from 'node:fs';
+import { readFileSync, unlinkSync } from 'node:fs';
 import { spawn, execFile } from 'node:child_process';
 
 const file = process.argv[2];
@@ -40,6 +40,11 @@ server.listen(0, '127.0.0.1', () => {
       });
       console.log(`Saved ${name}`);
     }
-    console.log('Google access is set. Reload nwanext.com/admin/stats/.');
+    // The client file holds a secret and is no longer needed once it lives in Worker secrets.
+    try { unlinkSync(file); console.log('Deleted the downloaded client file.'); } catch {}
+    // List the GA4 properties this account can read, so GA_PROPERTY_ID can be set (IDs are not secret).
+    const sums = await fetch('https://analyticsadmin.googleapis.com/v1beta/accountSummaries', { headers: { authorization: `Bearer ${data.access_token}` } }).then((x) => x.json());
+    for (const a of sums.accountSummaries || []) for (const pr of a.propertySummaries || []) console.log(`GA property: ${pr.displayName} = ${pr.property.replace('properties/', '')}`);
+    console.log('Google access is set. Set GA_PROPERTY_ID in wrangler.toml, deploy, then reload nwanext.com/admin/stats/.');
   });
 });
