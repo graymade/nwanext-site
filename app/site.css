@@ -281,7 +281,7 @@ h1.askh{font-size:clamp(2.4rem,6.2vw,6rem)}
 .spot{position:relative}
 .spot .ph{position:relative;overflow:clip;border-radius:6px}
 .spot img{inline-size:100%;aspect-ratio:4/5;object-fit:cover;transition:scale .6s var(--ease-out)}
-.spot .stone{position:absolute;z-index:1;inset-block-start:.9rem;inset-inline-start:.9rem;font-size:.95rem}
+.spot .stone{position:absolute;z-index:1;inset-block-start:.9rem;inset-inline-end:.9rem;font-size:.95rem}
 .spot h3{font-size:clamp(1.2rem,1.7vw,1.5rem);letter-spacing:-.01em;line-height:1.15;margin-block-start:.9rem;font-weight:650;transition:color .2s var(--ease-out)}
 .spot h3 a::after{content:"";position:absolute;inset:0}
 .spot h3 a:focus-visible{outline:2px solid transparent}
@@ -490,7 +490,9 @@ html.js .big:not(.in) .bigsvg{translate:0 112%}
 .meta a{border-block-end:1.5px solid}
 .stph{position:relative;inline-size:fit-content;max-inline-size:100%}
 .stph img{inline-size:auto;max-inline-size:100%;block-size:auto;max-block-size:72svh;border-radius:12px}
-.stph .stone{position:absolute;z-index:1;inset-block-start:1.1rem;inset-inline-start:1.1rem;font-size:1rem}
+.stph .stone{position:absolute;z-index:1;inset-block-start:1.1rem;inset-inline-end:1.1rem;font-size:1rem}
+/* photo badges sit top right, tilted down to the right and mirrored, so they clear the logos in the top left of the post graphics */
+:is(.spot,.stph) .stone{rotate:3deg}:is(.spot,.stph) .stone svg{scale:-1 1}
 .stph figcaption{contain:inline-size;display:flex;flex-wrap:wrap;justify-content:space-between;gap:.3rem 1.5rem;color:var(--muted);font-size:.88rem;margin-block-start:.6rem}
 .stph figcaption span a{border-block-end:1px solid color-mix(in srgb,currentColor 40%,transparent)}
 .orig{display:inline-flex;align-items:center;gap:.3rem;font-weight:600;white-space:nowrap;transition:color .2s var(--ease-out)}
